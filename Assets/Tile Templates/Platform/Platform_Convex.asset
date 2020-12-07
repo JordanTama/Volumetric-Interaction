@@ -15,6 +15,6 @@ MonoBehaviour:
   prefab: {fileID: 835929842947312317, guid: a4821015e5e5d1c4a896059b7dfff9fc, type: 3}
   unitsPerTile: 2
   connections:
-    data: 000101000001000000
+    data: 000000010100010100
     rows: 3
     columns: 3

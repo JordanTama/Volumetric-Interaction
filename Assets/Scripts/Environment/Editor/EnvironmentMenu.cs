@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Environment.TilePainting;
+using UnityEngine;
 using UnityEditor;
 
-namespace Environment
+namespace Environment.Editor
 {
     public abstract class EnvironmentMenu : ContextMenu
     {
