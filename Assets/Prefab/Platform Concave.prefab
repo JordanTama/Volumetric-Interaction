@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 8631481622114295177}
   - component: {fileID: 3266791464160716570}
   - component: {fileID: 3845062763003299370}
+  - component: {fileID: 6302834844718420943}
   m_Layer: 0
   m_Name: Concave Fence
   m_TagString: Untagged
@@ -111,6 +112,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &6302834844718420943
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2415117303616291130}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4996201915024748170, guid: 7d49d1e13ae93714eb523a364bc73f3b, type: 3}
 --- !u!1 &6897136524693854953
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,6 +137,7 @@ GameObject:
   - component: {fileID: 7354966593490735703}
   - component: {fileID: 1655038115570918483}
   - component: {fileID: 1339658000870834588}
+  - component: {fileID: 5345579312953137986}
   m_Layer: 0
   m_Name: Concave Ground
   m_TagString: Untagged
@@ -190,3 +206,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &5345579312953137986
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6897136524693854953}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -4095614819374067578, guid: 7d49d1e13ae93714eb523a364bc73f3b, type: 3}

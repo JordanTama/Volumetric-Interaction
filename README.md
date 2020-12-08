@@ -2,7 +2,7 @@
 
 #### **Task list:**
 _Setup:_
-- [ ] Add colliders to Platform tile prefabs.
+- [X] Add colliders to Platform tile prefabs.
 - [ ] Create functionality for PlayerController.
 - [ ] Implement a CameraController.
 

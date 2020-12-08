@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5169652892346081818}
   - component: {fileID: 647656597216467477}
   - component: {fileID: 3249555682268621366}
+  - component: {fileID: 1658379363298683890}
   m_Layer: 0
   m_Name: Edge Ground
   m_TagString: Untagged
@@ -79,6 +80,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &1658379363298683890
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767136985582728367}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3119727284334608186, guid: bf243e8ae32a22c4e91581698252b148, type: 3}
 --- !u!1 &4070339382160025009
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,6 +137,7 @@ GameObject:
   - component: {fileID: 3479252930297782997}
   - component: {fileID: 7465432776917404523}
   - component: {fileID: 8476306381668528691}
+  - component: {fileID: 6328493416488696522}
   m_Layer: 0
   m_Name: Edge Fence
   m_TagString: Untagged
@@ -190,3 +206,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!64 &6328493416488696522
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6232152674326862647}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7537178844756225490, guid: bf243e8ae32a22c4e91581698252b148, type: 3}
