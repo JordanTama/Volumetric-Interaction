@@ -1,13 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace VolumetricInteraction
 {
-    [AddComponentMenu("Volumetric Interaction/Controller")]
+    [ExecuteAlways, AddComponentMenu("Volumetric Interaction/Controller")]
     public class Controller : ActorBase
     {
-        public override void DrawDebug()
-        {
-            manager.DrawDebug();
-        }
+        private void Awake() => manager.Initialize();
+
+        private void Update() => manager.Update();
+
+        public override void DrawDebug() => manager.DrawDebug();
     }
 }
