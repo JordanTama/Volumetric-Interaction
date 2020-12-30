@@ -12,6 +12,7 @@ namespace VolumetricInteraction
         private Volume _volume;
 
         public Vector3 Position => transform.position;
+        public float Radius => radius;
         
         
         #region Unity Event Functions

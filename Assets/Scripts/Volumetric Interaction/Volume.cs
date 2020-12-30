@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using VolumetricInteraction.Utility;
 
 namespace VolumetricInteraction
 {
@@ -8,6 +9,9 @@ namespace VolumetricInteraction
     public class Volume : ActorBase
     {
         private readonly List<Source> _sources = new List<Source>();
+
+
+        public int Count => _sources.Count;
 
         
         #region Unity Event Functions
@@ -69,6 +73,8 @@ namespace VolumetricInteraction
                    && Mathf.Abs(localPos.z) <= .5f;
         }
         
+        public Source GetSource(int index) => _sources[index];
+        
         #endregion
 
 
@@ -84,7 +90,7 @@ namespace VolumetricInteraction
 
         private void DrawBounds()
         {
-            Handles.color = Color.white;
+            Handles.color = manager.FocusVolume == this ? Color.white : Color.black;
             Handles.matrix = transform.localToWorldMatrix;
             
             Handles.DrawWireCube(Vector3.zero, Vector3.one);

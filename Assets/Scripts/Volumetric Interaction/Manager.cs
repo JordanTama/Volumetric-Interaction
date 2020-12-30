@@ -4,11 +4,15 @@ using UnityEngine;
 
 namespace VolumetricInteraction
 {
+    // TODO: Draw out basic flow diagram for VI texture generation.
     public class Manager : ScriptableObject
     {
         private readonly List<Volume> _volumes = new List<Volume>();
         private readonly List<Source> _sources = new List<Source>();
 
+
+        public Volume FocusVolume => _volumes.Count > 0 ? _volumes[0] : null;
+        
 
         #region Event Functions
 
@@ -29,7 +33,7 @@ namespace VolumetricInteraction
                 {
                     if (!vol.Bounds(_sources[i])) continue;
 
-                    Move(_sources[i], vol);
+                    Assign(_sources[i], vol);
                 }
             }
         }
@@ -38,6 +42,14 @@ namespace VolumetricInteraction
         
         
         #region Data Management
+
+        public void SetFocus(Volume volume)
+        {
+            if (!_volumes.Contains(volume)) return;
+
+            _volumes.Remove(volume);
+            _volumes.Insert(0, volume);
+        }
 
         public void Add(Volume volume)
         {
@@ -67,7 +79,7 @@ namespace VolumetricInteraction
                 _sources.Remove(source);
         }
 
-        public void Move(Source source, Volume volume)
+        public void Assign(Source source, Volume volume)
         {
             if (!_sources.Contains(source)) return;
 
