@@ -1,8 +1,12 @@
-## **VOLUMETRIC INTERACTION**
+# **VOLUMETRIC INTERACTION**
 
-### **Task list:**
+This project involves developing a dynamic volumetric (3D) texture rendering implementation to
+assess the viability of dynamic volumetric textures in games. The viability will be gauged by
+performance benchmarks in a simple interactive environment.
+By using dynamic volumetric textures for environment interaction, multiple shortcomings of
+traditional approaches can be subverted, resulting in more immersive virtual environments.
 
----
+## **Task list:**
 
 ##### Aim 1: _To create a volumetric texture rendering implementation that can be seamlessly integrated into various projects._
 
