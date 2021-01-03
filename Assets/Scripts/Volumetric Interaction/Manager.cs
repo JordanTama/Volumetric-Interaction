@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace VolumetricInteraction
 {
@@ -13,6 +14,8 @@ namespace VolumetricInteraction
         private readonly List<Source> _sources = new List<Source>();
 
         private RenderTexture _texture;
+        
+        private static readonly int InteractionTexture = Shader.PropertyToID("_InteractionTexture");
 
 
         public Volume FocusVolume => _volumes.Count > 0 ? _volumes[0] : null;
@@ -24,8 +27,13 @@ namespace VolumetricInteraction
         {
             _volumes.Clear();
             _sources.Clear();
-            
-            _texture = new RenderTexture(Resolution.x, Resolution.y, 0);
+
+            _texture = new RenderTexture(Resolution.x, Resolution.y, 0)
+            { 
+                enableRandomWrite = true,
+                dimension = TextureDimension.Tex3D,
+                volumeDepth = Resolution.z
+            };
         }
 
         public void InteractionUpdate(float delta)
@@ -45,6 +53,9 @@ namespace VolumetricInteraction
             debug += "Manager -> updating texture...\n";
             debug += "delta = " + delta + "\n";
             Debug.Log(debug);
+            
+            // TODO: This may not need to be called everytime the texture changes...
+            Shader.SetGlobalTexture(InteractionTexture, _texture);
         }
         
         #endregion
