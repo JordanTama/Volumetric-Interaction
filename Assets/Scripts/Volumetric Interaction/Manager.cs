@@ -34,15 +34,7 @@ namespace VolumetricInteraction
             _volumes = new List<Volume>();
             _sources = new List<Source>();
 
-            _texture = new RenderTexture(Resolution.x, Resolution.y, 0, RenderTextureFormat.ARGB32)
-            { 
-                dimension = TextureDimension.Tex3D,
-                volumeDepth = Resolution.z,
-                wrapMode = TextureWrapMode.Clamp,
-                enableRandomWrite = true,
-                filterMode = FilterMode.Point
-            };
-            _texture.Create();
+            InitializeTexture();
         }
 
         public void InteractionUpdate(float delta)
@@ -56,11 +48,26 @@ namespace VolumetricInteraction
         
         #region Texture Generation
 
+        public void InitializeTexture()
+        {
+            _texture = new RenderTexture(Resolution.x, Resolution.y, 0, RenderTextureFormat.ARGB32)
+            { 
+                dimension = TextureDimension.Tex3D,
+                volumeDepth = Resolution.z,
+                wrapMode = TextureWrapMode.Clamp,
+                enableRandomWrite = true,
+                filterMode = FilterMode.Point
+            };
+            
+            _texture.Create();
+        }
+
         private void UpdateTexture(float delta)
         {
             if (!FocusVolume)
             {
                 Debug.Log("No FocusVolume!");
+                return;
             }
             
             // Assign compute shader parameters
