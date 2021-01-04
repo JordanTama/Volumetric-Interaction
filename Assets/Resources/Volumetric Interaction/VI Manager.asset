@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd125127c9984f42abcd1e4031bddee1, type: 3}
   m_Name: VI Manager
   m_EditorClassIdentifier: 
-  Resolution: {x: 64, y: 64, z: 64}
+  Resolution: {x: 64, y: 16, z: 64}
   computeShader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}

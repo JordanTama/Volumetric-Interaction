@@ -11,8 +11,8 @@ namespace VolumetricInteraction
         public Vector3Int Resolution;
         public ComputeShader computeShader;
         
-        private readonly List<Volume> _volumes = new List<Volume>();
-        private readonly List<Source> _sources = new List<Source>();
+        private List<Volume> _volumes;
+        private List<Source> _sources;
 
         private RenderTexture _texture;
         
@@ -31,8 +31,8 @@ namespace VolumetricInteraction
 
         public void Initialize()
         {
-            _volumes.Clear();
-            _sources.Clear();
+            _volumes = new List<Volume>();
+            _sources = new List<Source>();
 
             _texture = new RenderTexture(Resolution.x, Resolution.y, 0, RenderTextureFormat.ARGB32)
             { 

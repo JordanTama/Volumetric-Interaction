@@ -17,7 +17,6 @@ namespace VolumetricInteraction
         
         #region Unity Event Functions
 
-        // BUG: Race condition results in null reference in manager...
         private void OnEnable() => manager.Add(this);
         
         private void Start() => OnEnable();
@@ -35,7 +34,7 @@ namespace VolumetricInteraction
             
             _sources.Add(source);
         }
-
+        
         public void Remove(Source source)
         {
             if (!_sources.Contains(source)) return;

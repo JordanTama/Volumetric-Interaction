@@ -11,7 +11,7 @@ namespace VolumetricInteraction
 
         private float _timer;
 
-        private void OnEnable() => manager.Initialize();
+        private void Awake() => manager.Initialize();
 
         public override void DrawDebug() => manager.DrawDebug();
         
