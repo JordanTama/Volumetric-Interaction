@@ -45,3 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   manager: {fileID: 11400000, guid: d901b25e431b8c44db225c6393d782c2, type: 2}
   debugVisualisation: 1
+  generate: 1
+  timeStep: 0.02

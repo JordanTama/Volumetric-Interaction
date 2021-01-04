@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using VolumetricInteraction.Utility;
 
 namespace VolumetricInteraction
@@ -16,6 +17,7 @@ namespace VolumetricInteraction
         
         #region Unity Event Functions
 
+        // BUG: Race condition results in null reference in manager...
         private void OnEnable() => manager.Add(this);
         
         private void Start() => OnEnable();
@@ -90,6 +92,7 @@ namespace VolumetricInteraction
 
         private void DrawBounds()
         {
+            Handles.zTest = CompareFunction.LessEqual;
             Handles.color = manager.FocusVolume == this ? Color.white : Color.black;
             Handles.matrix = transform.localToWorldMatrix;
             

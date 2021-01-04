@@ -9,13 +9,19 @@ namespace VolumetricInteraction
     public class Manager : ScriptableObject
     {
         public Vector3Int Resolution;
+        public ComputeShader computeShader;
         
         private readonly List<Volume> _volumes = new List<Volume>();
         private readonly List<Source> _sources = new List<Source>();
 
         private RenderTexture _texture;
         
-        private static readonly int InteractionTexture = Shader.PropertyToID("_InteractionTexture");
+        private static readonly int InteractionTexture = Shader.PropertyToID("interaction_texture");
+        private static readonly int VolumeLocalToWorld = Shader.PropertyToID("volume_local_to_world");
+        private static readonly int VolumeWorldToLocal = Shader.PropertyToID("volume_world_to_local");
+
+        private const int MainKernelId = 0;
+        private const string ComputeResultName = "result";
 
 
         public Volume FocusVolume => _volumes.Count > 0 ? _volumes[0] : null;
@@ -28,12 +34,15 @@ namespace VolumetricInteraction
             _volumes.Clear();
             _sources.Clear();
 
-            _texture = new RenderTexture(Resolution.x, Resolution.y, 0)
+            _texture = new RenderTexture(Resolution.x, Resolution.y, 0, RenderTextureFormat.ARGB32)
             { 
-                enableRandomWrite = true,
                 dimension = TextureDimension.Tex3D,
-                volumeDepth = Resolution.z
+                volumeDepth = Resolution.z,
+                wrapMode = TextureWrapMode.Clamp,
+                enableRandomWrite = true,
+                filterMode = FilterMode.Point
             };
+            _texture.Create();
         }
 
         public void InteractionUpdate(float delta)
@@ -49,13 +58,23 @@ namespace VolumetricInteraction
 
         private void UpdateTexture(float delta)
         {
-            string debug = "";
-            debug += "Manager -> updating texture...\n";
-            debug += "delta = " + delta + "\n";
-            Debug.Log(debug);
+            if (!FocusVolume)
+            {
+                Debug.Log("No FocusVolume!");
+            }
             
-            // TODO: This may not need to be called everytime the texture changes...
+            // Assign compute shader parameters
+            computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
+            computeShader.SetInts("resolution", Resolution.x, Resolution.y, Resolution.z);
+            
+            // Dispatch compute shader
+            computeShader.Dispatch(MainKernelId, Resolution.x / 8, Resolution.y / 8, Resolution.z / 8);
+
+            // Assign global Shader variables
             Shader.SetGlobalTexture(InteractionTexture, _texture);
+            
+            Shader.SetGlobalMatrix(VolumeLocalToWorld, FocusVolume.transform.localToWorldMatrix);
+            Shader.SetGlobalMatrix(VolumeWorldToLocal, FocusVolume.transform.worldToLocalMatrix);
         }
         
         #endregion

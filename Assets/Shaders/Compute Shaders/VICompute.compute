@@ -1,0 +1,13 @@
+﻿#pragma kernel main
+
+RWTexture3D<float4> result;
+int3 resolution;
+
+[numthreads(8,8,8)]
+void main (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x > 0 && id.y > 0 && id.z > 0 && id.x < resolution.x - 1 && id.y < resolution.y - 1 && id.z < resolution.z - 1)
+        result[id.xyz] = float4(1, 1, 1, 1);
+    else
+        result[id.xyz] = float4(0, 0, 0, 1);
+}
