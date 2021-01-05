@@ -1,13 +1,39 @@
 ﻿#pragma kernel main
 
+struct seed
+{
+    float3 position;
+    float radius;
+};
+
 RWTexture3D<float4> result;
+RWStructuredBuffer<seed> buffer;
+
+float4x4 volume_local_to_world;
 int3 resolution;
 
 [numthreads(8,8,8)]
-void main (uint3 id : SV_DispatchThreadID)
+void main (const uint3 id : SV_DispatchThreadID)
 {
-    if (id.x > 0 && id.y > 0 && id.z > 0 && id.x < resolution.x - 1 && id.y < resolution.y - 1 && id.z < resolution.z - 1)
-        result[id.xyz] = float4(1, 1, 1, 1);
-    else
-        result[id.xyz] = float4(0, 0, 0, 1);
+    // Transform pixel to UV space
+    // Transform UV to local space
+    // Transform local to world space
+
+    const float3 uv = id.xyz / ((float) resolution.xyz - 1);
+    const float3 local = uv.xyz - float3(.5, .5, .5);
+    const float3 world = mul(volume_local_to_world, float4(local, 1));
+
+    uint length, stride;
+    buffer.GetDimensions(length, stride);
+    
+    result[id] = float4(uv, 1);
+    
+    for (uint i = 0; i < length; i++)
+    {
+        if (distance(world, buffer[i].position) < buffer[i].radius)
+            result[id] = float4(1, 1, 1, 1);
+    }
+
+    if (id.x == 0 || id.x == resolution.x - 1 || id.y == 0 || id.y == resolution.y - 1 || id.z == 0 || id.z == resolution.z - 1)
+        result[id.xyz] = float4(0, 0, 0, 0);
 }

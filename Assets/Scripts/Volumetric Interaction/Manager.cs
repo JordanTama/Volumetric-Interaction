@@ -15,6 +15,7 @@ namespace VolumetricInteraction
         private List<Source> _sources;
 
         private RenderTexture _texture;
+        private ComputeBuffer _buffer;
         
         private static readonly int InteractionTexture = Shader.PropertyToID("interaction_texture");
         private static readonly int VolumeLocalToWorld = Shader.PropertyToID("volume_local_to_world");
@@ -34,6 +35,7 @@ namespace VolumetricInteraction
             _volumes = new List<Volume>();
             _sources = new List<Source>();
 
+            // InitializeBuffer();
             InitializeTexture();
         }
 
@@ -62,6 +64,11 @@ namespace VolumetricInteraction
             _texture.Create();
         }
 
+        private void InitializeBuffer()
+        {
+            _buffer = new ComputeBuffer(0, sizeof(float) * 4);
+        }
+        
         private void UpdateTexture(float delta)
         {
             if (!FocusVolume)
@@ -69,10 +76,27 @@ namespace VolumetricInteraction
                 Debug.Log("No FocusVolume!");
                 return;
             }
+
+            if (FocusVolume.Count <= 0)
+                return;
             
+            // Set compute buffer data
+            List<Seed> seeds = new List<Seed>();
+            for (int i = 0; i < FocusVolume.Count; i++)
+            {
+                Source source = FocusVolume.GetSource(i);
+                seeds.Add(new Seed(source.Position, source.Radius));
+            }
+
+            _buffer = new ComputeBuffer(seeds.Count, sizeof(float) * 4);
+            _buffer.SetData(seeds);
+
             // Assign compute shader parameters
-            computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
+            computeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
             computeShader.SetInts("resolution", Resolution.x, Resolution.y, Resolution.z);
+            
+            computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
+            computeShader.SetBuffer(MainKernelId, "buffer", _buffer);
             
             // Dispatch compute shader
             computeShader.Dispatch(MainKernelId, Resolution.x / 8, Resolution.y / 8, Resolution.z / 8);
@@ -163,6 +187,23 @@ namespace VolumetricInteraction
             
             foreach (Source source in _sources)
                 source.DrawDebug();
+        }
+        
+        #endregion
+        
+        
+        #region Data Structures
+
+        private struct Seed
+        {
+            public Vector3 WorldPosition;
+            public float Radius;
+
+            public Seed(Vector3 worldPosition, float radius)
+            {
+                WorldPosition = worldPosition;
+                Radius = radius;
+            }
         }
         
         #endregion
