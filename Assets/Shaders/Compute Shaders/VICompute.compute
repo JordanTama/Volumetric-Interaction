@@ -11,6 +11,7 @@ RWStructuredBuffer<seed> buffer;
 
 float4x4 volume_local_to_world;
 int3 resolution;
+float delta;
 
 [numthreads(8,8,8)]
 void main (const uint3 id : SV_DispatchThreadID)
@@ -26,14 +27,16 @@ void main (const uint3 id : SV_DispatchThreadID)
     uint length, stride;
     buffer.GetDimensions(length, stride);
     
-    result[id] = float4(uv, 1);
+    float4 new_value = float4(uv, 1);
     
     for (uint i = 0; i < length; i++)
     {
         if (distance(world, buffer[i].position) < buffer[i].radius)
-            result[id] = float4(1, 1, 1, 1);
+            new_value = float4(1, 1, 1, 1);
     }
 
     if (id.x == 0 || id.x == resolution.x - 1 || id.y == 0 || id.y == resolution.y - 1 || id.z == 0 || id.z == resolution.z - 1)
-        result[id.xyz] = float4(0, 0, 0, 0);
+        new_value = float4(0, 0, 0, 0);
+
+    result[id] = lerp(result[id], new_value, delta / .25);
 }

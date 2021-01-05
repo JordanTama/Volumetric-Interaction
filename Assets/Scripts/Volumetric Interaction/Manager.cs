@@ -94,6 +94,7 @@ namespace VolumetricInteraction
             // Assign compute shader parameters
             computeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
             computeShader.SetInts("resolution", Resolution.x, Resolution.y, Resolution.z);
+            computeShader.SetFloat("delta", delta);
             
             computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
             computeShader.SetBuffer(MainKernelId, "buffer", _buffer);
