@@ -8,7 +8,8 @@ namespace VolumetricInteraction
     // TODO: Draw out basic flow diagram for VI texture generation.
     public class Manager : ScriptableObject
     {
-        public Vector3Int Resolution;
+        public Vector3Int resolution;
+        public FilterMode filterMode;
         public ComputeShader computeShader;
         
         private List<Volume> _volumes;
@@ -52,13 +53,13 @@ namespace VolumetricInteraction
 
         public void InitializeTexture()
         {
-            _texture = new RenderTexture(Resolution.x, Resolution.y, 0, RenderTextureFormat.ARGB32)
+            _texture = new RenderTexture(resolution.x, resolution.y, 0, RenderTextureFormat.ARGB32)
             { 
                 dimension = TextureDimension.Tex3D,
-                volumeDepth = Resolution.z,
+                volumeDepth = resolution.z,
                 wrapMode = TextureWrapMode.Clamp,
                 enableRandomWrite = true,
-                filterMode = FilterMode.Point
+                filterMode = filterMode
             };
             
             _texture.Create();
@@ -88,14 +89,14 @@ namespace VolumetricInteraction
 
             // Assign compute shader parameters
             computeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
-            computeShader.SetInts("resolution", Resolution.x, Resolution.y, Resolution.z);
+            computeShader.SetInts("resolution", resolution.x, resolution.y, resolution.z);
             computeShader.SetFloat("delta", delta);
             
             computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
             computeShader.SetBuffer(MainKernelId, "buffer", _buffer);
             
             // Dispatch compute shader
-            computeShader.Dispatch(MainKernelId, Resolution.x / 8, Resolution.y / 8, Resolution.z / 8);
+            computeShader.Dispatch(MainKernelId, resolution.x / 8, resolution.y / 8, resolution.z / 8);
 
             // Assign global Shader variables
             Shader.SetGlobalTexture(InteractionTexture, _texture);

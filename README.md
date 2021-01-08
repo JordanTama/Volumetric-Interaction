@@ -14,7 +14,7 @@ traditional approaches can be subverted, resulting in more immersive virtual env
 - [ ] **1.1:** Conduct background research
     - [ ] **1.1.1:** Research existing environmental interaction approaches.
     - [ ] **1.1.2:** Research volumetric texture rendering implementations.
-    - [ ] **1.1.3:** Identify game engines with features that support volumetric texture rendering.
+    - [X] **1.1.3:** Identify game engines with features that support volumetric texture rendering.
     - [ ] **1.1.4:** Research distance field generation algorithms.
     - [ ] **1.1.5:** Identify reasonable performance targets from existing games.
     
@@ -23,9 +23,9 @@ traditional approaches can be subverted, resulting in more immersive virtual env
     - [ ] **1.2.2:** Program debug and editor tools.
     
 - [ ] **1.3:** Implement volumetric texture rendering.
-    - [ ] **1.3.1:** Implement brute force texture rendering algorithm.
+    - [X] **1.3.1:** Implement brute force texture rendering algorithm.
     - [ ] **1.3.2:** Program simple vertex displacement shader to debug vector field output.
-    - [ ] **1.3.3:** Program ray-marching shader for visualization.
+    - [X] **1.3.3:** Program ray-marching shader for visualization.
     - [ ] **1.3.4:** Implement faster rendering algorithm.
 
 ---

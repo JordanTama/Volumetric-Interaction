@@ -77,15 +77,18 @@
                     const float3 ray_position = ray_origin + ray_direction * (dst_to_box + dst_travelled);
                     const float4 samp = sample_interaction_world(mul(volume_local_to_world, float4(ray_position, 1)));
                     
-                    sample = samp.a > sample.a ? samp : sample;
+                    if (samp.a > 0)
+                    {
+                        sample = samp;
+                        break;
+                    }
 
                     dst_travelled += step_size;
-                    // sample = float4(1, 1, 1, 1);
                 }
                 
                 fixed4 col = tex2D(_MainTex, i.uv);
                 
-                return float4(lerp(col.rgb, sample.rgb, sample.a), col.a);
+                return float4(sample.a > 0 ? sample.rgb : col.rgb, col.a);
             }
             ENDCG
         }

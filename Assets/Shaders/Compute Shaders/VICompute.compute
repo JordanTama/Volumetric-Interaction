@@ -16,6 +16,8 @@ float delta;
 [numthreads(8,8,8)]
 void main (const uint3 id : SV_DispatchThreadID)
 {
+    result[id].a -= delta * 0.5;
+    
     const float3 uv = id.xyz / float3(resolution.x - 1, resolution.y - 1, resolution.z - 1);
     const float3 local = uv.xyz - .5;
     const float3 world = mul(volume_local_to_world, float4(local, 1));
@@ -23,17 +25,16 @@ void main (const uint3 id : SV_DispatchThreadID)
     uint length, stride;
     buffer.GetDimensions(length, stride);
     
-    float4 new_value = float4(uv, 0);
+    float4 new_value = float4(0, 0, 0, 0);
     
     for (uint i = 0; i < length; i++)
     {
         const float dist = distance(world, buffer[i].position);
         const float strength = 1 - dist / buffer[i].radius;
-        if (strength >= 0)
+        if (strength >= new_value.a)
         {
             float3 to_seed = (normalize(float3(buffer[i].position - world)) + 1) * 0.5;
-            new_value = float4(to_seed, 1);
-            new_value.a = 1;
+            new_value = float4(to_seed, strength);
         }
     }
     
@@ -42,5 +43,5 @@ void main (const uint3 id : SV_DispatchThreadID)
 
     // TODO: Replace linear interpolation with a 'move towards' function.
     // result[id] = lerp(result[id], new_value, delta / .25);
-    result[id] = new_value;
+    result[id] = new_value.a > 0 ? new_value : result[id];
 }
