@@ -24,7 +24,7 @@ traditional approaches can be subverted, resulting in more immersive virtual env
     
 - [ ] **1.3:** Implement volumetric texture rendering.
     - [X] **1.3.1:** Implement brute force texture rendering algorithm.
-    - [ ] **1.3.2:** Program simple vertex displacement shader to debug vector field output.
+    - [X] **1.3.2:** Program simple vertex displacement shader to debug vector field output.
     - [X] **1.3.3:** Program ray-marching shader for visualization.
     - [ ] **1.3.4:** Implement faster rendering algorithm.
 
@@ -50,3 +50,9 @@ traditional approaches can be subverted, resulting in more immersive virtual env
     
 - [ ] **3.3:** Build project.
     - [ ] **3.3.1:** Export to supported target platforms.
+  
+## **Notes:**
+VolumetricInteraction.cginc functions need to be fixed to:
+- return a -1 -> +1 range
+- fill dead space with grey
+  
