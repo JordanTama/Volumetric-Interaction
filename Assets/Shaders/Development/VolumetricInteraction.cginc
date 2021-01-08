@@ -3,7 +3,13 @@ uniform sampler3D interaction_texture;
 uniform matrix volume_local_to_world;
 uniform matrix volume_world_to_local;
 
-float4 sample_interaction(float3 world_position)
+float4 sample_interaction_local(float3 local_position)
+{
+    float4 sample = tex3Dlod(interaction_texture, float4(local_position, 0));
+    return sample;
+}
+
+float4 sample_interaction_world(float3 world_position)
 {
     // Make world_position relative to the volume.
     world_position = world_position - mul(volume_local_to_world, float4(0, 0, 0, 1));
@@ -15,6 +21,5 @@ float4 sample_interaction(float3 world_position)
     local_position = local_position + .5;
 
     // Sample the interaction_texture.
-    float4 sample = tex3Dlod(interaction_texture, float4(local_position, 0));
-    return sample;
+    return sample_interaction_local(local_position);
 }

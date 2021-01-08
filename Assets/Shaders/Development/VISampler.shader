@@ -32,8 +32,9 @@
 
             fixed4 frag (frag_input i) : SV_Target
             {
-                return sample_interaction(i.world_position);
+                return sample_interaction_world(i.world_position);
             }
+            
             ENDCG
         }
     }

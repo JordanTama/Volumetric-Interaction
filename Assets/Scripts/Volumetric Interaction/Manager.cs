@@ -63,11 +63,6 @@ namespace VolumetricInteraction
             
             _texture.Create();
         }
-
-        private void InitializeBuffer()
-        {
-            _buffer = new ComputeBuffer(0, sizeof(float) * 4);
-        }
         
         private void UpdateTexture(float delta)
         {
@@ -80,7 +75,7 @@ namespace VolumetricInteraction
             if (FocusVolume.Count <= 0)
                 return;
             
-            // Set compute buffer data
+            // Set compute buffer data - TODO: This can probably be optimized to not create a new buffer every tick...
             List<Seed> seeds = new List<Seed>();
             for (int i = 0; i < FocusVolume.Count; i++)
             {
@@ -107,6 +102,9 @@ namespace VolumetricInteraction
             
             Shader.SetGlobalMatrix(VolumeLocalToWorld, FocusVolume.transform.localToWorldMatrix);
             Shader.SetGlobalMatrix(VolumeWorldToLocal, FocusVolume.transform.worldToLocalMatrix);
+            
+            // Release the buffer
+            _buffer.Release();
         }
         
         #endregion
