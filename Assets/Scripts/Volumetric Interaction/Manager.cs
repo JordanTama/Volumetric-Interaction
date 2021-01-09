@@ -5,15 +5,14 @@ using UnityEngine.Rendering;
 
 namespace VolumetricInteraction
 {
-    // TODO: Draw out basic flow diagram for VI texture generation.
     public class Manager : ScriptableObject
     {
         public Vector3Int resolution;
         public FilterMode filterMode;
         public ComputeShader computeShader;
         
-        private List<Volume> _volumes;
-        private List<Source> _sources;
+        private readonly List<Volume> _volumes = new List<Volume>();
+        private readonly List<Source> _sources = new List<Source>();
 
         private RenderTexture _texture;
         private ComputeBuffer _buffer;
@@ -33,10 +32,9 @@ namespace VolumetricInteraction
 
         public void Initialize()
         {
-            _volumes = new List<Volume>();
-            _sources = new List<Source>();
+            _volumes.Clear();
+            _sources.Clear();;
 
-            // InitializeBuffer();
             InitializeTexture();
         }
 
