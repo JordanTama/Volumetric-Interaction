@@ -1,32 +1,11 @@
-﻿#pragma kernel main
+﻿#include "VolumetricInteractionCompute.cginc"
 
-struct seed
-{
-    float3 position;
-    float3 prev_position;
-    float radius;
-};
-
-RWTexture3D<float4> result;
-RWStructuredBuffer<seed> buffer;
-
-float4x4 volume_local_to_world;
-int3 resolution;
-float delta;
-
-#include "UnityCG.cginc"
-
-float move_towards(float current, float target, float max_delta)
-{
-    if (abs(target - current) <= max_delta)
-        return target;
-
-    return current + sign(target - current) * max_delta;
-}
+#pragma kernel main
 
 [numthreads(8,8,8)]
 void main (const uint3 id : SV_DispatchThreadID)
 {
+    // First thing to do is decay the texture.
     result[id.xyz].a = move_towards(result[id.xyz].a, 0, 0.5 * delta);
     
     const float3 uv = id.xyz / float3(resolution.x - 1, resolution.y - 1, resolution.z - 1);
@@ -48,11 +27,17 @@ void main (const uint3 id : SV_DispatchThreadID)
             new_value = float4(to_seed, strength);
         }
     }
-    
+
+    // Edge pixels are blank so that repeating the texture doesn't actually draw it.
     if (id.x == 0 || id.x == resolution.x - 1 || id.y == 0 || id.y == resolution.y - 1 || id.z == 0 || id.z == resolution.z - 1)
         new_value = float4(0, 0, 0, 0);
 
-    // TODO: Replace linear interpolation with a 'move towards' function.
-    // result[id] = lerp(result[id], new_value, delta / .25);
-    result[id] = new_value.a > result[id].a ? new_value : result[id];
+    float4 previous_value = result[id];
+    float4 final_value = float4(previous_value.xyz, max(previous_value.a, new_value.a));
+
+    const float t_a = new_value.a + previous_value.a;
+    if (t_a > 0)
+        final_value.xyz = (new_value.xyz * (new_value.a / t_a)) + (previous_value.xyz * (previous_value.a / t_a));
+    
+    result[id] = final_value;
 }
