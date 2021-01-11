@@ -9,10 +9,12 @@ public class Visualiser : MonoBehaviour
     // TODO: Recreate material when shader is assigned in custom editor.
     [SerializeField] private Shader shader;
     [SerializeField] private int samples;
+    [SerializeField] [Range(0f, 1f)] private float opacity;
 
     private Material _material;
     
     private static readonly int SamplesName = Shader.PropertyToID("_Samples");
+    private static readonly int OpacityName = Shader.PropertyToID("_Opacity");
 
     private void Start()
     {
@@ -25,6 +27,7 @@ public class Visualiser : MonoBehaviour
             _material = new Material(shader);
      
         _material.SetInt(SamplesName, samples);
+        _material.SetFloat(OpacityName, opacity);
         Graphics.Blit(src, dest, _material);
     }
 }

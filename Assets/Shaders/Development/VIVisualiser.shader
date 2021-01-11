@@ -4,6 +4,7 @@
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Samples ("Samples", Int) = 10
+        _Opacity ("Opacity", Range(0, 1)) = 0
     }
     SubShader
     {
@@ -45,9 +46,10 @@
             }
 
             sampler2D _MainTex;
-            int _Samples;
-
             sampler2D _CameraDepthTexture;
+            
+            int _Samples;
+            float _Opacity;
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -87,8 +89,10 @@
                 }
                 
                 fixed4 col = tex2D(_MainTex, i.uv);
+
+                const bool draw_interaction = sample.a > 0;
                 
-                return float4(sample.a > 0 ? sample.rgb : col.rgb, col.a);
+                return float4(draw_interaction ? lerp(sample.rgb, col.rgb, _Opacity) : col.rgb, col.a);
             }
             ENDCG
         }
