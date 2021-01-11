@@ -25,6 +25,17 @@ namespace VolumetricInteraction
         
         #endregion
         
+        
+        #region Custom Event Functions
+
+        public override void OnTick()
+        {
+            foreach (Source source in _sources)
+                source.OnTick();
+        }
+        
+        #endregion
+
 
         #region Data Management
 

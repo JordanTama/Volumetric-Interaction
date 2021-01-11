@@ -8,6 +8,13 @@ namespace VolumetricInteraction
         [SerializeField] protected Manager manager;
         [SerializeField] protected bool debugVisualisation;
 
+
+        public virtual void OnTick()
+        {
+            
+        }
+        
+
         #region Debug
         
         public abstract void DrawDebug();

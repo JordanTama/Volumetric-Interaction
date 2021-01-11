@@ -41,7 +41,17 @@ namespace VolumetricInteraction
         public void InteractionUpdate(float delta)
         {
             ActorUpdate();
+            ActorTick();
             UpdateTexture(delta);
+        }
+
+        private void ActorTick()
+        {
+            foreach (Source source in _sources)
+                source.OnTick();
+            
+            foreach (Volume volume in _volumes)
+                volume.OnTick();
         }
 
         #endregion
@@ -79,10 +89,10 @@ namespace VolumetricInteraction
             for (int i = 0; i < FocusVolume.Count; i++)
             {
                 Source source = FocusVolume.GetSource(i);
-                seeds.Add(new Seed(source.Position, source.Radius));
+                seeds.Add(new Seed(source.Position, source.PreviousPosition, source.Radius));
             }
 
-            _buffer = new ComputeBuffer(seeds.Count, sizeof(float) * 4);
+            _buffer = new ComputeBuffer(seeds.Count, sizeof(float) * 7);
             _buffer.SetData(seeds);
 
             // Assign compute shader parameters
@@ -111,6 +121,8 @@ namespace VolumetricInteraction
         
         #region Actor Management
 
+        
+        
         private void ActorUpdate()
         {
             foreach (Volume vol in _volumes)
@@ -195,11 +207,13 @@ namespace VolumetricInteraction
         private struct Seed
         {
             public Vector3 WorldPosition;
+            public Vector3 PrevWorldPosition;
             public float Radius;
 
-            public Seed(Vector3 worldPosition, float radius)
+            public Seed(Vector3 worldPosition, Vector3 prevWorldPosition, float radius)
             {
                 WorldPosition = worldPosition;
+                PrevWorldPosition = prevWorldPosition;
                 Radius = radius;
             }
         }

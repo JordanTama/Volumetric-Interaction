@@ -11,13 +11,20 @@ namespace VolumetricInteraction
         
         private Volume _volume;
 
-        public Vector3 Position => transform.position;
+        public Vector3 Position { get; private set; }
+        public Vector3 PreviousPosition { get; private set; }
+
         public float Radius => radius;
         
         
         #region Unity Event Functions
 
-        private void OnEnable() => manager.Add(this);
+        private void OnEnable()
+        {
+            manager.Add(this);
+            PreviousPosition = transform.position;
+            Position = transform.position;
+        }
 
         private void Start() => OnEnable();
 
@@ -29,6 +36,18 @@ namespace VolumetricInteraction
             manager.Remove(this);
         }
 
+        #endregion
+        
+        
+        #region Custom Event Functions
+
+        public override void OnTick()
+        {
+            PreviousPosition = Position;
+            Position = transform.position;
+        }
+        
+        
         #endregion
 
 
