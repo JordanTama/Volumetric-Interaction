@@ -33,16 +33,15 @@ namespace VolumetricInteraction
         public void Initialize()
         {
             _volumes.Clear();
-            _sources.Clear();;
+            _sources.Clear();
 
             InitializeTexture();
         }
 
         public void InteractionUpdate(float delta)
         {
-            // BUG: The order of Update and Tick determines whether the trail is drawn entering or exiting a volume...
-            ActorUpdate();
             ActorTick();
+            ActorUpdate();
             UpdateTexture(delta);
         }
 
@@ -98,14 +97,14 @@ namespace VolumetricInteraction
 
             // Assign compute shader parameters
             computeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
-            computeShader.SetInts("resolution", resolution.x, resolution.y, resolution.z);
+            computeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
             computeShader.SetFloat("delta", delta);
             
             computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
             computeShader.SetBuffer(MainKernelId, "buffer", _buffer);
             
             // Dispatch compute shader
-            computeShader.Dispatch(MainKernelId, resolution.x / 8, resolution.y / 8, resolution.z / 8);
+            computeShader.Dispatch(MainKernelId, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
 
             // Assign global Shader variables
             Shader.SetGlobalTexture(InteractionTexture, _texture);

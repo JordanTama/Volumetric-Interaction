@@ -79,10 +79,17 @@ namespace VolumetricInteraction
 
         public bool Bounds(Source source)
         {
-            Vector3 localPos = transform.InverseTransformPoint(source.Position);
-            return Mathf.Abs(localPos.x) <= .5f
-                   && Mathf.Abs(localPos.y) <= .5f
-                   && Mathf.Abs(localPos.z) <= .5f;
+            Vector3 localPosition = transform.InverseTransformPoint(source.Position);
+            Vector3 prevLocalPosition = transform.InverseTransformPoint(source.PreviousPosition);
+
+            return Bounds(localPosition) || Bounds(prevLocalPosition);
+        }
+
+        private bool Bounds(Vector3 localPosition)
+        {
+            return Mathf.Abs(localPosition.x) <= .5f
+                   && Mathf.Abs(localPosition.y) <= .5f
+                   && Mathf.Abs(localPosition.z) <= .5f;
         }
         
         public Source GetSource(int index) => _sources[index];
