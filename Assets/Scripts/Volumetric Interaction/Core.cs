@@ -23,8 +23,26 @@ namespace VolumetricInteraction
 
         public static void Initialize()
         {
+            Volume[] volumes = _volumes.ToArray();
+            foreach (Volume volume in volumes)
+                volume.Clear();
+            
+            Source[] sources = _sources.ToArray();
+            
             _volumes.Clear();
             _sources.Clear();
+
+            foreach (Volume volume in volumes)
+            {
+                if (volume)
+                    Add(volume);
+            }
+
+            foreach (Source source in sources)
+            {
+                if (source)
+                    Add(source);
+            }
 
             InitializeTexture();
         }
@@ -75,7 +93,6 @@ namespace VolumetricInteraction
             if (FocusVolume.Count <= 0)
                 return;
             
-            // Set compute buffer data - TODO: This can probably be optimized to not create a new buffer every tick...
             List<Seed> seeds = new List<Seed>();
             for (int i = 0; i < FocusVolume.Count; i++)
             {

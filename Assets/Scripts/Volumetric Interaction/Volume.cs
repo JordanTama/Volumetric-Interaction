@@ -19,8 +19,6 @@ namespace VolumetricInteraction
 
         private void OnEnable() => Core.Add(this);
         
-        private void Start() => OnEnable();
-        
         private void OnDisable() => Core.Remove(this);
         
         #endregion

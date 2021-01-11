@@ -26,8 +26,6 @@ namespace VolumetricInteraction
             Position = transform.position;
         }
 
-        private void Start() => OnEnable();
-
         private void OnDisable()
         {
             if (_volume)
