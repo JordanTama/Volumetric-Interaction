@@ -13,10 +13,18 @@ float4x4 volume_local_to_world;
 int3 resolution;
 float delta;
 
+float move_towards(float current, float target, float max_delta)
+{
+    if (abs(target - current) <= max_delta)
+        return target;
+
+    return current + sign(target - current) * max_delta;
+}
+
 [numthreads(8,8,8)]
 void main (const uint3 id : SV_DispatchThreadID)
 {
-    result[id].a -= delta * 0.5;
+    result[id.xyz].a = move_towards(result[id.xyz].a, 0, 0.5 * delta);
     
     const float3 uv = id.xyz / float3(resolution.x - 1, resolution.y - 1, resolution.z - 1);
     const float3 local = uv.xyz - .5;
@@ -43,5 +51,5 @@ void main (const uint3 id : SV_DispatchThreadID)
 
     // TODO: Replace linear interpolation with a 'move towards' function.
     // result[id] = lerp(result[id], new_value, delta / .25);
-    result[id] = new_value.a > 0 ? new_value : result[id];
+    result[id] = new_value.a > result[id].a ? new_value : result[id];
 }
