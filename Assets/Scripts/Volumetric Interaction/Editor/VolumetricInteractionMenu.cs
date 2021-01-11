@@ -6,7 +6,7 @@ namespace VolumetricInteraction.Editor
     {
         private const string Directory = "Assets/Create/Volumetric Interaction/";
         
-        [MenuItem(Directory + "Manager")]
-        private static void NewTileTemplate() => CreateScriptableObject<Manager>();
+        [MenuItem(Directory + "Settings Preset")]
+        private static void NewSettingsPreset() => CreateScriptableObject<SettingsProfile>();
     }
 }

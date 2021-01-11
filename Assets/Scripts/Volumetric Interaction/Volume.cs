@@ -17,11 +17,11 @@ namespace VolumetricInteraction
         
         #region Unity Event Functions
 
-        private void OnEnable() => manager.Add(this);
+        private void OnEnable() => Core.Add(this);
         
         private void Start() => OnEnable();
         
-        private void OnDisable() => manager.Remove(this);
+        private void OnDisable() => Core.Remove(this);
         
         #endregion
         
@@ -50,14 +50,14 @@ namespace VolumetricInteraction
         {
             if (!_sources.Contains(source)) return;
 
-            manager.Add(source);
+            Core.Add(source);
             _sources.Remove(source);
         }
 
         public void Clear()
         {
             foreach (Source source in _sources)
-                manager.Add(source);
+                Core.Add(source);
             
             _sources.Clear();
         }
@@ -110,7 +110,7 @@ namespace VolumetricInteraction
         private void DrawBounds()
         {
             Handles.zTest = CompareFunction.LessEqual;
-            Handles.color = manager.FocusVolume == this ? Color.white : Color.black;
+            Handles.color = Core.FocusVolume == this ? Color.white : Color.black;
             Handles.matrix = transform.localToWorldMatrix;
             
             Handles.DrawWireCube(Vector3.zero, Vector3.one);

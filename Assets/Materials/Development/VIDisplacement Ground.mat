@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: VIDisplacement
+  m_Name: VIDisplacement Ground
   m_Shader: {fileID: 4800000, guid: 9dd1812fb00511148bca2b36d89a9163, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

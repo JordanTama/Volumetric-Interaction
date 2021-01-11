@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd125127c9984f42abcd1e4031bddee1, type: 3}
-  m_Name: VI Manager
+  m_Script: {fileID: 11500000, guid: 6d1e549dc9ac432194fb60dccc3a4318, type: 3}
+  m_Name: SettingsInstance
   m_EditorClassIdentifier: 
-  resolution: {x: 256, y: 256, z: 256}
-  filterMode: 0
-  computeShader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}
+  profile: {fileID: 11400000, guid: 2460c31edfd80664c9a35227c584341a, type: 2}

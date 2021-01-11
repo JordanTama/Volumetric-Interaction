@@ -11,16 +11,18 @@ namespace VolumetricInteraction
 
         private float _timer;
 
-        private void Awake() => manager.Initialize();
+        private void Awake() => Core.Initialize();
 
-        public override void DrawDebug() => manager.DrawDebug();
+        private void OnEnable() => Awake();
+
+        public override void DrawDebug() => Core.DrawDebug();
         
         private void Update()
         {
             _timer -= Time.deltaTime;
             if (!generate || _timer > 0f) return;
             
-            manager.InteractionUpdate(timeStep - _timer);
+            Core.InteractionUpdate(timeStep - _timer);
             _timer = timeStep;
         }
     }

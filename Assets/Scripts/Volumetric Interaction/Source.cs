@@ -21,7 +21,7 @@ namespace VolumetricInteraction
 
         private void OnEnable()
         {
-            manager.Add(this);
+            Core.Add(this);
             PreviousPosition = transform.position;
             Position = transform.position;
         }
@@ -33,7 +33,7 @@ namespace VolumetricInteraction
             if (_volume)
                 _volume.Remove(this);
             
-            manager.Remove(this);
+            Core.Remove(this);
         }
 
         #endregion

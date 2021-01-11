@@ -1,36 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace VolumetricInteraction
 {
-    public class Manager : ScriptableObject
+    public static class Core
     {
-        public Vector3Int resolution;
-        public FilterMode filterMode;
-        public ComputeShader computeShader;
-        
-        private readonly List<Volume> _volumes = new List<Volume>();
-        private readonly List<Source> _sources = new List<Source>();
+        private static readonly List<Volume> _volumes = new List<Volume>();
+        private static readonly List<Source> _sources = new List<Source>();
 
-        private RenderTexture _texture;
-        private ComputeBuffer _buffer;
+        private static RenderTexture _texture;
+        private static ComputeBuffer _buffer;
         
         private static readonly int InteractionTexture = Shader.PropertyToID("interaction_texture");
         private static readonly int VolumeLocalToWorld = Shader.PropertyToID("volume_local_to_world");
         private static readonly int VolumeWorldToLocal = Shader.PropertyToID("volume_world_to_local");
-
-        private const int MainKernelId = 0;
-        private const string ComputeResultName = "result";
-
-
-        public Volume FocusVolume => _volumes.Count > 0 ? _volumes[0] : null;
+        
+        public static Volume FocusVolume => _volumes.Count > 0 ? _volumes[0] : null;
         
 
         #region Event Functions
 
-        public void Initialize()
+        public static void Initialize()
         {
             _volumes.Clear();
             _sources.Clear();
@@ -38,14 +29,14 @@ namespace VolumetricInteraction
             InitializeTexture();
         }
 
-        public void InteractionUpdate(float delta)
+        public static void InteractionUpdate(float delta)
         {
             ActorTick();
             ActorUpdate();
             UpdateTexture(delta);
         }
 
-        private void ActorTick()
+        private static void ActorTick()
         {
             foreach (Source source in _sources)
                 source.OnTick();
@@ -59,21 +50,21 @@ namespace VolumetricInteraction
         
         #region Texture Generation
 
-        public void InitializeTexture()
+        private static void InitializeTexture()
         {
-            _texture = new RenderTexture(resolution.x, resolution.y, 0, RenderTextureFormat.ARGB32)
+            _texture = new RenderTexture(Settings.Resolution.x, Settings.Resolution.y, 0, RenderTextureFormat.ARGB32)
             { 
                 dimension = TextureDimension.Tex3D,
-                volumeDepth = resolution.z,
+                volumeDepth = Settings.Resolution.z,
                 wrapMode = TextureWrapMode.Clamp,
                 enableRandomWrite = true,
-                filterMode = filterMode
+                filterMode = Settings.FilterMode
             };
             
             _texture.Create();
         }
         
-        private void UpdateTexture(float delta)
+        private static void UpdateTexture(float delta)
         {
             if (!FocusVolume)
             {
@@ -96,15 +87,15 @@ namespace VolumetricInteraction
             _buffer.SetData(seeds);
 
             // Assign compute shader parameters
-            computeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
-            computeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
-            computeShader.SetFloat("delta", delta);
+            Settings.ComputeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
+            Settings.ComputeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
+            Settings.ComputeShader.SetFloat("delta", delta);
             
-            computeShader.SetTexture(MainKernelId, ComputeResultName, _texture);
-            computeShader.SetBuffer(MainKernelId, "buffer", _buffer);
+            Settings.ComputeShader.SetTexture(Settings.MainKernelId, Settings.ComputeResultName, _texture);
+            Settings.ComputeShader.SetBuffer(Settings.MainKernelId, "buffer", _buffer);
             
             // Dispatch compute shader
-            computeShader.Dispatch(MainKernelId, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
+            Settings.ComputeShader.Dispatch(Settings.MainKernelId, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
 
             // Assign global Shader variables
             Shader.SetGlobalTexture(InteractionTexture, _texture);
@@ -121,9 +112,7 @@ namespace VolumetricInteraction
         
         #region Actor Management
 
-        
-        
-        private void ActorUpdate()
+        private static void ActorUpdate()
         {
             foreach (Volume vol in _volumes)
                 vol.Clean();
@@ -140,7 +129,7 @@ namespace VolumetricInteraction
             }
         }
 
-        public void SetFocus(Volume volume)
+        public static void SetFocus(Volume volume)
         {
             if (!_volumes.Contains(volume)) return;
 
@@ -148,13 +137,13 @@ namespace VolumetricInteraction
             _volumes.Insert(0, volume);
         }
 
-        public void Add(Volume volume)
+        public static void Add(Volume volume)
         {
             if (!_volumes.Contains(volume))
                 _volumes.Add(volume);
         }
 
-        public void Remove(Volume volume)
+        public static void Remove(Volume volume)
         {
             if (!_volumes.Contains(volume)) return;
             
@@ -162,7 +151,7 @@ namespace VolumetricInteraction
             _volumes.Remove(volume);
         }
 
-        public void Add(Source source)
+        public static void Add(Source source)
         {
             if (_sources.Contains(source)) return;
             
@@ -170,13 +159,13 @@ namespace VolumetricInteraction
             source.Disassociate();
         }
 
-        public void Remove(Source source)
+        public static void Remove(Source source)
         {
             if (_sources.Contains(source))
                 _sources.Remove(source);
         }
 
-        public void Assign(Source source, Volume volume)
+        public static void Assign(Source source, Volume volume)
         {
             if (!_sources.Contains(source)) return;
 
@@ -190,7 +179,7 @@ namespace VolumetricInteraction
         
         #region Debug
         
-        public void DrawDebug()
+        public static void DrawDebug()
         {
             foreach (Volume volume in _volumes)
                 volume.DrawDebug();

@@ -5,14 +5,10 @@ namespace VolumetricInteraction
 {
     public abstract class ActorBase : MonoBehaviour
     {
-        [SerializeField] protected Manager manager;
         [SerializeField] protected bool debugVisualisation;
 
 
-        public virtual void OnTick()
-        {
-            
-        }
+        public virtual void OnTick() {}
         
 
         #region Debug
