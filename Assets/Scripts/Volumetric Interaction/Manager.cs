@@ -40,6 +40,7 @@ namespace VolumetricInteraction
 
         public void InteractionUpdate(float delta)
         {
+            // BUG: The order of Update and Tick determines whether the trail is drawn entering or exiting a volume...
             ActorUpdate();
             ActorTick();
             UpdateTexture(delta);

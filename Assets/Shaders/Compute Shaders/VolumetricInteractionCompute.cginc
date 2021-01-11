@@ -1,17 +1,9 @@
-﻿
-struct seed
+﻿struct seed
 {
     float3 position;
     float3 prev_position;
     float radius;
 };
-
-RWTexture3D<float4> result;
-RWStructuredBuffer<seed> buffer;
-
-float4x4 volume_local_to_world;
-int3 resolution;
-float delta;
 
 float move_towards(float current, float target, float max_delta)
 {
@@ -19,4 +11,14 @@ float move_towards(float current, float target, float max_delta)
         return target;
 
     return current + sign(target - current) * max_delta;
+}
+
+float3 closest_point_on_line_segment(float3 p, float3 a, float3 b)
+{
+    float3 v = b - a;
+    float3 u = a - p;
+    
+    float t = -(dot(v, u) / dot(v, v));
+    t = saturate(t);
+    return (1 - t) * a + t * b;
 }

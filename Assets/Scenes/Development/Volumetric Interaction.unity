@@ -323,7 +323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: 8ae92974122d302478c14a4a11ee28d4, type: 3}
   samples: 200
-  opacity: 0
+  opacity: 0.5
 --- !u!81 &902645815
 AudioListener:
   m_ObjectHideFlags: 0
@@ -416,11 +416,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1027247363}
   m_LocalRotation: {x: -0, y: -0.24362062, z: -0, w: 0.9698706}
-  m_LocalPosition: {x: 8.6, y: 4.06, z: -6.68}
-  m_LocalScale: {x: 2.6170092, y: 3.0773897, z: 1.5340605}
+  m_LocalPosition: {x: 5.755109, y: 3.4667268, z: 4.619457}
+  m_LocalScale: {x: 2.2345958, y: 2.6277018, z: 1.3098942}
   m_Children: []
   m_Father: {fileID: 1245736453}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -28.201002, z: 0}
 --- !u!65 &1027247365
 BoxCollider:
@@ -522,7 +522,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084309878}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.1, y: 3.31, z: -4.31}
+  m_LocalPosition: {x: -0.63, y: 3.31, z: -6.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -555,10 +555,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1610871339}
   - {fileID: 1653560376}
   - {fileID: 1290735962}
   - {fileID: 1027247364}
+  - {fileID: 1610871339}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -602,7 +602,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276504164}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.13, y: 0.06, z: -8.24}
+  m_LocalPosition: {x: -23.51, y: 0.06, z: -5.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -635,11 +635,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1290735961}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.95, y: 2.57, z: -10.5}
-  m_LocalScale: {x: 5.3498964, y: 2.195, z: 5.1487174}
+  m_LocalPosition: {x: -0.77702504, y: 2.1944551, z: 1.3576592}
+  m_LocalScale: {x: 4.5681357, y: 1.8742526, z: 4.396354}
   m_Children: []
   m_Father: {fileID: 1245736453}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1290735963
 BoxCollider:
@@ -820,11 +820,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610871338}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.86, y: 0, z: -12.09}
-  m_LocalScale: {x: 3.5134, y: 3.5134, z: 3.5134}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 1245736453}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &1610871340
 MeshCollider:
@@ -914,11 +914,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1653560375}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.02, y: 0.6, z: -10.5}
-  m_LocalScale: {x: 7.341397, y: 2.195, z: 13.897423}
+  m_LocalPosition: {x: -1.5711275, y: 0.5123242, z: 1.3576592}
+  m_LocalScale: {x: 6.2686253, y: 1.8742526, z: 11.866643}
   m_Children: []
   m_Father: {fileID: 1245736453}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1653560377
 BoxCollider:
@@ -1065,8 +1065,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1851830871}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.52, y: 1.99, z: -8.19}
-  m_LocalScale: {x: 17.565506, y: 7.265368, z: 17.565506}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 30, y: 8, z: 30}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
@@ -1158,7 +1158,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2036007563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.96, y: 1.97, z: -0.67}
+  m_LocalPosition: {x: 5.84, y: 1.97, z: -6.694}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 625693755}
