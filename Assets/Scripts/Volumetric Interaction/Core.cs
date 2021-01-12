@@ -6,8 +6,8 @@ namespace VolumetricInteraction
 {
     public static class Core
     {
-        private static readonly List<Volume> _volumes = new List<Volume>();
-        private static readonly List<Source> _sources = new List<Source>();
+        private static readonly List<Volume> Volumes = new List<Volume>();
+        private static readonly List<Source> Sources = new List<Source>();
 
         private static RenderTexture _texture;
         private static ComputeBuffer _buffer;
@@ -16,21 +16,21 @@ namespace VolumetricInteraction
         private static readonly int VolumeLocalToWorld = Shader.PropertyToID("volume_local_to_world");
         private static readonly int VolumeWorldToLocal = Shader.PropertyToID("volume_world_to_local");
         
-        public static Volume FocusVolume => _volumes.Count > 0 ? _volumes[0] : null;
+        public static Volume FocusVolume => Volumes.Count > 0 ? Volumes[0] : null;
         
 
         #region Event Functions
 
         public static void Initialize()
         {
-            Volume[] volumes = _volumes.ToArray();
+            Volume[] volumes = Volumes.ToArray();
             foreach (Volume volume in volumes)
                 volume.Clear();
             
-            Source[] sources = _sources.ToArray();
+            Source[] sources = Sources.ToArray();
             
-            _volumes.Clear();
-            _sources.Clear();
+            Volumes.Clear();
+            Sources.Clear();
 
             foreach (Volume volume in volumes)
             {
@@ -56,10 +56,10 @@ namespace VolumetricInteraction
 
         private static void ActorTick()
         {
-            foreach (Source source in _sources)
+            foreach (Source source in Sources)
                 source.OnTick();
             
-            foreach (Volume volume in _volumes)
+            foreach (Volume volume in Volumes)
                 volume.OnTick();
         }
 
@@ -131,16 +131,16 @@ namespace VolumetricInteraction
 
         private static void ActorUpdate()
         {
-            foreach (Volume vol in _volumes)
+            foreach (Volume vol in Volumes)
                 vol.Clean();
 
-            for (int i = _sources.Count - 1; i >= 0; i--)
+            for (int i = Sources.Count - 1; i >= 0; i--)
             {
-                foreach (Volume vol in _volumes)
+                foreach (Volume vol in Volumes)
                 {
-                    if (!vol.Bounds(_sources[i])) continue;
+                    if (!vol.Bounds(Sources[i])) continue;
 
-                    Assign(_sources[i], vol);
+                    Assign(Sources[i], vol);
                     break;
                 }
             }
@@ -148,43 +148,43 @@ namespace VolumetricInteraction
 
         public static void SetFocus(Volume volume)
         {
-            if (!_volumes.Contains(volume)) return;
+            if (!Volumes.Contains(volume)) return;
 
-            _volumes.Remove(volume);
-            _volumes.Insert(0, volume);
+            Volumes.Remove(volume);
+            Volumes.Insert(0, volume);
         }
 
         public static void Add(Volume volume)
         {
-            if (!_volumes.Contains(volume))
-                _volumes.Add(volume);
+            if (!Volumes.Contains(volume))
+                Volumes.Add(volume);
         }
 
         public static void Remove(Volume volume)
         {
-            if (!_volumes.Contains(volume)) return;
+            if (!Volumes.Contains(volume)) return;
             
             volume.Clear();
-            _volumes.Remove(volume);
+            Volumes.Remove(volume);
         }
 
         public static void Add(Source source)
         {
-            if (_sources.Contains(source)) return;
+            if (Sources.Contains(source)) return;
             
-            _sources.Add(source);
+            Sources.Add(source);
             source.Disassociate();
         }
 
         public static void Remove(Source source)
         {
-            if (_sources.Contains(source))
-                _sources.Remove(source);
+            if (Sources.Contains(source))
+                Sources.Remove(source);
         }
 
         public static void Assign(Source source, Volume volume)
         {
-            if (!_sources.Contains(source)) return;
+            if (!Sources.Contains(source)) return;
 
             Remove(source);
             volume.Add(source);
@@ -198,10 +198,10 @@ namespace VolumetricInteraction
         
         public static void DrawDebug()
         {
-            foreach (Volume volume in _volumes)
+            foreach (Volume volume in Volumes)
                 volume.DrawDebug();
             
-            foreach (Source source in _sources)
+            foreach (Source source in Sources)
                 source.DrawDebug();
         }
         

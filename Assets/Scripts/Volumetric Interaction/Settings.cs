@@ -27,7 +27,7 @@ namespace VolumetricInteraction
                 Settings instance = CreateInstance<Settings>();
                 AssetDatabase.CreateAsset(instance, Path);
 
-                return _instance = instance; //AssetDatabase.LoadAssetAtPath<Settings>(Path);
+                return _instance = instance;
             }
         }
 

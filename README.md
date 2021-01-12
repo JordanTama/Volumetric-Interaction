@@ -51,8 +51,3 @@ traditional approaches can be subverted, resulting in more immersive virtual env
 - [ ] **3.3:** Build project.
     - [ ] **3.3.1:** Export to supported target platforms.
   
-## **Notes:**
-VolumetricInteraction.cginc functions need to be fixed to:
-- return a -1 -> +1 range
-- fill dead space with grey
-  

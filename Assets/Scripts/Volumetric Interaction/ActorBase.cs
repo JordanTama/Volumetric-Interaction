@@ -8,7 +8,11 @@ namespace VolumetricInteraction
         [SerializeField] protected bool debugVisualisation;
 
 
+        #region Custom Event Functions
+        
         public virtual void OnTick() {}
+        
+        #endregion
         
 
         #region Debug

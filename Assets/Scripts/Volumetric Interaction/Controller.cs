@@ -10,10 +10,9 @@ namespace VolumetricInteraction
         [SerializeField] private float timeStep = 0.02f;
 
         private float _timer;
+        
 
-        private void Awake() => Core.Initialize();
-
-        private void OnEnable() => Awake();
+        private void OnEnable() => Core.Initialize();
 
         public override void DrawDebug() => Core.DrawDebug();
         
