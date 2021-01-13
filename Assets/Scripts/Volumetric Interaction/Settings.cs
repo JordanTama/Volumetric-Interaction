@@ -43,6 +43,8 @@ namespace VolumetricInteraction
         public static int MainKernelId => Profile.mainKernelId;
 
         public static string ComputeResultName => Profile.computeResultName;
+
+        public static float DecaySpeed => Profile.decaySpeed;
         
         // Methods
         public static void SetProfile(SettingsProfile profile)

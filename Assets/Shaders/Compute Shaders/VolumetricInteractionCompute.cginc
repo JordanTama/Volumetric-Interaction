@@ -11,6 +11,7 @@ RWStructuredBuffer<seed> buffer;
 float4x4 volume_local_to_world;
 int3 resolution;
 float delta;
+float decay_speed;
 
 float move_towards(float current, float target, float max_delta)
 {

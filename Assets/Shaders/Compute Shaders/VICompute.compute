@@ -6,7 +6,7 @@
 void main (const uint3 id : SV_DispatchThreadID)
 {
     // First thing to do is decay the texture.
-    result[id.xyz].a = move_towards(result[id.xyz].a, 0, 0.5 * delta);
+    result[id.xyz].a = move_towards(result[id.xyz].a, 0, decay_speed * delta);
 
     // Calculate interaction value based on line segment approach.
     float4 new_value = calculate_interaction_line(id_to_world(id));

@@ -107,6 +107,7 @@ namespace VolumetricInteraction
             Settings.ComputeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
             Settings.ComputeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
             Settings.ComputeShader.SetFloat("delta", delta);
+            Settings.ComputeShader.SetFloat("decay_speed", Settings.DecaySpeed);
             
             Settings.ComputeShader.SetTexture(Settings.MainKernelId, Settings.ComputeResultName, _texture);
             Settings.ComputeShader.SetBuffer(Settings.MainKernelId, "buffer", _buffer);

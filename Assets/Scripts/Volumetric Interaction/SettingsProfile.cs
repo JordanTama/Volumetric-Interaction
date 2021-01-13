@@ -14,5 +14,6 @@ namespace VolumetricInteraction
         public ComputeShader computeShader;
         public int mainKernelId;
         public string computeResultName;
+        public float decaySpeed;
     }
 }
