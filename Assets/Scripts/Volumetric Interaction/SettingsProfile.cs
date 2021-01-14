@@ -12,5 +12,22 @@ namespace VolumetricInteraction
         public int mainKernelId;
         public string computeResultName;
         public float decaySpeed;
+
+        private void OnDestroy()
+        {
+            if (!Settings.Profile)
+                Settings.CheckProfile();
+        }
+
+        public void ResetToDefault()
+        {
+            resolution = new Vector3Int(64, 64, 64);
+            filterMode = FilterMode.Point;
+            computeShader =
+                AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute Shaders/VICompute.compute");
+            mainKernelId = 0;
+            computeResultName = "result";
+            decaySpeed = 0.5f;
+        }
     }
 }

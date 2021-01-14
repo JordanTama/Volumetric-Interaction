@@ -8,7 +8,7 @@ namespace VolumetricInteraction.Editor
         private bool _defaultInspectorFoldout;
         public override void OnInspectorGUI()
         {
-            
+            DrawDefaultInspector();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +11,6 @@ namespace VolumetricInteraction
         
         // Serialized member variables
         [SerializeField] private SettingsProfile profile;
-        [SerializeField] private SettingsProfile defaultProfile;
         
         // Singleton management
         private static Settings _instance;
@@ -34,7 +34,6 @@ namespace VolumetricInteraction
 
         // Preset accessor properties
         public static SettingsProfile Profile => Instance.profile;
-        public static SettingsProfile DefaultProfile => Instance.defaultProfile;
         
         public static Vector3Int Resolution => Profile.resolution;
 
@@ -48,17 +47,28 @@ namespace VolumetricInteraction
 
         public static float DecaySpeed => Profile.decaySpeed;
         
+
         // Methods
-        public static void SetProfile(SettingsProfile profile)
+        public static void CheckProfile()
         {
-            Instance.profile = profile;
-            EditorUtility.SetDirty(_instance);
+            if (!Profile)
+                Instance.ResetProfile();
+        }
+        
+        
+        private void OnEnable()
+        {
+            if (!profile)
+                ResetProfile();
         }
 
-        public static void SetDefaultProfile(SettingsProfile profile)
+        private void ResetProfile()
         {
-            Instance.defaultProfile = profile;
-            EditorUtility.SetDirty(_instance);
+            SettingsProfile newProfile = CreateInstance<SettingsProfile>();
+            newProfile.ResetToDefault();
+            newProfile.name = "internalProfile";
+            
+            profile = newProfile;
         }
     }
 }

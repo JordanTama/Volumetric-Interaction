@@ -84,9 +84,9 @@ namespace VolumetricInteraction
         
         private static void UpdateTexture(float delta)
         {
-            if (!FocusVolume)
+            if (!FocusVolume || Settings.ComputeShader is null)
             {
-                Debug.Log("No FocusVolume!");
+                Debug.Log("No FocusVolume or ComputeShader!");
                 return;
             }
 

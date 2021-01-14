@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d1e549dc9ac432194fb60dccc3a4318, type: 3}
   m_Name: SettingsInstance
   m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: f05bd0b0b8e5c9c40b29e568bc11dd92, type: 2}
-  defaultProfile: {fileID: 11400000, guid: 4a19113e48db69146996f7f82eeeb788, type: 2}
+  profile: {fileID: 0}

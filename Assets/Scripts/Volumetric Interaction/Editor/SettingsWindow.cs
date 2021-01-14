@@ -5,9 +5,31 @@ using UnityEngine;
 
 namespace VolumetricInteraction.Editor
 {
-    [SuppressMessage("ReSharper", "AssignmentInConditionalExpression")]
     public class SettingsWindow : EditorWindow
     {
+        private SettingsProfile exposedProfile;
+        private UnityEditor.Editor editor;
+        
+        
+        [MenuItem("Window/Volumetric Interaction/Settings")]
+        private static void ShowWindow()
+        {
+            var window = GetWindow<SettingsWindow>();
+            window.titleContent = new GUIContent("VI Settings", EditorGUIUtility.IconContent("SettingsIcon").image);
+            window.Show();
+        }
+
+        private void OnEnable()
+        {
+            
+        }
+
+        private void OnGUI()
+        {
+            
+        }
+
+        /*
         private Vector2 _scrollPos;
         
         private string saveName = "New Settings Profile";
@@ -42,6 +64,12 @@ namespace VolumetricInteraction.Editor
                     textColor = Color.white
                 }
             };
+
+            if (!Settings.Profile)
+                Settings.SetProfile(CloneProfile(Settings.DefaultProfile, "New Settings Profile"));
+            
+            profileEditor = UnityEditor.Editor.CreateEditor(Settings.Profile);
+            saveName = Settings.Profile.name;
         }
 
         private void OnGUI()
@@ -168,5 +196,7 @@ namespace VolumetricInteraction.Editor
             if (GUILayout.Button("Save"))
                 Settings.SetProfile(Save(Settings.Profile, name));
         }
+        */
     }
+    
 }
