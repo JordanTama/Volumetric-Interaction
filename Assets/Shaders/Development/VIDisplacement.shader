@@ -36,8 +36,7 @@
             float3 world_normal = UnityObjectToWorldNormal(v.normal);
 
             float3 direction = get_displacement_world(world_position);
-            float3 projection =  world_normal * (dot(direction, world_normal) / pow(length(world_normal), 2)); // project direction onto world_normal...
-            // projection = normalize(projection);
+            float3 projection =  world_normal * (dot(direction, world_normal) / pow(length(world_normal), 2));
             
             world_position.xyz -= projection * _Displacement;
 

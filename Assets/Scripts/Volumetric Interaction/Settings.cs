@@ -10,6 +10,7 @@ namespace VolumetricInteraction
         
         // Serialized member variables
         [SerializeField] private SettingsProfile profile;
+        [SerializeField] private SettingsProfile defaultProfile;
         
         // Singleton management
         private static Settings _instance;
@@ -33,6 +34,7 @@ namespace VolumetricInteraction
 
         // Preset accessor properties
         public static SettingsProfile Profile => Instance.profile;
+        public static SettingsProfile DefaultProfile => Instance.defaultProfile;
         
         public static Vector3Int Resolution => Profile.resolution;
 
@@ -50,6 +52,12 @@ namespace VolumetricInteraction
         public static void SetProfile(SettingsProfile profile)
         {
             Instance.profile = profile;
+            EditorUtility.SetDirty(_instance);
+        }
+
+        public static void SetDefaultProfile(SettingsProfile profile)
+        {
+            Instance.defaultProfile = profile;
             EditorUtility.SetDirty(_instance);
         }
     }
