@@ -18,15 +18,15 @@ traditional approaches can be subverted, resulting in more immersive virtual env
     - [ ] **1.1.4:** Research distance field generation algorithms.
     - [ ] **1.1.5:** Identify reasonable performance targets from existing games.
     
-- [ ] **1.2:** Develop API for volumetric texture rendering.
+- [X] **1.2:** Develop API for volumetric texture rendering.
     - [X] **1.2.1:** Program dynamic manager/actor relationship.
-    - [ ] **1.2.2:** Program debug and editor tools.
+    - [X] **1.2.2:** Program debug and editor tools.
     
 - [ ] **1.3:** Implement volumetric texture rendering.
     - [X] **1.3.1:** Implement brute force texture rendering algorithm.
     - [X] **1.3.2:** Program simple vertex displacement shader to debug vector field output.
     - [X] **1.3.3:** Program ray-marching shader for visualization.
-    - [ ] **1.3.4:** Implement faster rendering algorithm.
+    - [ ] **1.3.4:** **_Implement faster rendering algorithm._**
 
 ---
 
