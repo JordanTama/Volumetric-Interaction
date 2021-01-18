@@ -23,6 +23,9 @@ namespace VolumetricInteraction
 
         public static void Initialize()
         {
+            // if (!Settings.Profile)
+            //     Settings.ReassignProfile();
+            
             Volume[] volumes = Volumes.ToArray();
             foreach (Volume volume in volumes)
                 volume.Clear();
@@ -49,6 +52,9 @@ namespace VolumetricInteraction
 
         public static void InteractionUpdate(float delta)
         {
+            // if (!Settings.Profile)
+            //     Settings.ReassignProfile();
+            
             ActorTick();
             ActorUpdate();
             UpdateTexture(delta);

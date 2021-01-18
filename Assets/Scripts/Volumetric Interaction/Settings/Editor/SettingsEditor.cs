@@ -2,10 +2,9 @@
 
 namespace VolumetricInteraction.Editor
 {
-    [CustomEditor(typeof(SettingsProfile))]
-    public class SettingsProfileEditor : UnityEditor.Editor
+    [CustomEditor(typeof(Settings))]
+    public class SettingsEditor : UnityEditor.Editor
     {
-        private bool _defaultInspectorFoldout;
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();

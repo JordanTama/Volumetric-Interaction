@@ -5,9 +5,12 @@ using UnityEngine;
 
 namespace VolumetricInteraction
 {
+    [Serializable]
     public class Settings : ScriptableObject
     {
-        private const string Path = "Assets/Resources/Volumetric Interaction/SettingsInstance.asset";
+        private const string SettingsPath = "Assets/Resources/Volumetric Interaction/Settings/";
+        private const string InstancePath = SettingsPath + "SettingsInstance.asset";
+        private const string ProfilePath = SettingsPath + "InternalProfile.asset";
         
         // Serialized member variables
         [SerializeField] private SettingsProfile profile;
@@ -20,19 +23,23 @@ namespace VolumetricInteraction
             get
             {
                 if (!_instance)
-                    _instance = AssetDatabase.LoadAssetAtPath<Settings>(Path);
+                    _instance = AssetDatabase.LoadAssetAtPath<Settings>(InstancePath);
 
                 if (_instance)
                     return _instance;
                 
                 Settings instance = CreateInstance<Settings>();
-                AssetDatabase.CreateAsset(instance, Path);
+                instance.profile = AssetDatabase.LoadAssetAtPath<SettingsProfile>(ProfilePath);
+                
+                AssetDatabase.CreateAsset(instance, InstancePath);
 
                 return _instance = instance;
             }
         }
 
-        // Preset accessor properties
+        
+        #region Preset accessor properties
+        
         public static SettingsProfile Profile => Instance.profile;
         
         public static Vector3Int Resolution => Profile.resolution;
@@ -47,28 +54,18 @@ namespace VolumetricInteraction
 
         public static float DecaySpeed => Profile.decaySpeed;
         
+        #endregion
+        
 
-        // Methods
-        public static void CheckProfile()
+        public static void ApplyValues(SettingsProfile newProfile)
         {
-            if (!Profile)
-                Instance.ResetProfile();
-        }
-        
-        
-        private void OnEnable()
-        {
-            if (!profile)
-                ResetProfile();
+            Profile.ApplyValues(newProfile);
         }
 
         private void ResetProfile()
         {
-            SettingsProfile newProfile = CreateInstance<SettingsProfile>();
-            newProfile.ResetToDefault();
-            newProfile.name = "internalProfile";
-            
-            profile = newProfile;
+            profile.ResetToDefault();
+            profile.name = "internalProfile";
         }
     }
 }

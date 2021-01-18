@@ -7,11 +7,14 @@ namespace VolumetricInteraction.Editor
 {
     public class SettingsWindow : EditorWindow
     {
-        private SettingsProfile exposedProfile;
-        private UnityEditor.Editor editor;
+        private SettingsProfile _exposedProfile;
+        private SettingsProfileEditor _editor;
+
+        private string _saveString = "New Profile";
+        private SettingsProfile _loadTarget;
         
         
-        [MenuItem("Window/Volumetric Interaction/Settings")]
+        [MenuItem("Volumetric Interaction/Settings")]
         private static void ShowWindow()
         {
             var window = GetWindow<SettingsWindow>();
@@ -21,13 +24,90 @@ namespace VolumetricInteraction.Editor
 
         private void OnEnable()
         {
-            
+            _exposedProfile = CloneInternal();
+            _editor = (SettingsProfileEditor) UnityEditor.Editor.CreateEditor(_exposedProfile);
         }
 
         private void OnGUI()
         {
+            if (!_exposedProfile)
+                OnEnable();
             
+            DrawSaveLoad();
+            
+            EditorGUILayout.Space(40);
+            _editor.OnInspectorGUI();
+            EditorGUILayout.Space(40);
+            
+            DrawChangeButtons();
         }
+
+        private void DrawChangeButtons()
+        {
+            GUILayout.BeginHorizontal();
+            
+            GUI.enabled = _exposedProfile.CompareSettings(Settings.Profile);
+            if (GUILayout.Button("Apply"))
+            {
+                Settings.ApplyValues(_exposedProfile);
+                Core.Initialize();
+                OnEnable();
+            }
+            GUI.enabled = true;
+
+            if (GUILayout.Button("Revert"))
+            {
+                OnEnable();
+            }
+            
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawSaveLoad()
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUI.BeginChangeCheck();
+            _loadTarget = (SettingsProfile) EditorGUILayout.ObjectField(_loadTarget, typeof(SettingsProfile), false);
+            if (EditorGUI.EndChangeCheck())
+                _saveString = _loadTarget ? _loadTarget.name : "New Profile";
+
+            if (GUILayout.Button("Load") && _loadTarget)
+            {
+                _exposedProfile.ApplyValues(_loadTarget);
+            }
+            
+            EditorGUILayout.EndHorizontal();
+
+            
+            EditorGUILayout.BeginHorizontal();
+
+            _saveString = EditorGUILayout.TextField(_saveString);
+            if (GUILayout.Button("Save"))
+            {
+                SettingsProfile newProfile = CreateInstance<SettingsProfile>();
+                newProfile.ApplyValues(_exposedProfile);
+                newProfile.name = _saveString;
+
+                AssetDatabase.CreateAsset(newProfile, "Assets/Resources/Volumetric Interaction/Profiles/" + newProfile.name + ".asset");
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private static SettingsProfile CloneInternal()
+        {
+            SettingsProfile exposed = Instantiate(Settings.Profile);
+            exposed.name = "exposedProfile";
+            return exposed;
+        }
+        
+        
+        
+        
+        
+        
+        
 
         /*
         private Vector2 _scrollPos;
@@ -66,7 +146,7 @@ namespace VolumetricInteraction.Editor
             };
 
             if (!Settings.Profile)
-                Settings.SetProfile(CloneProfile(Settings.DefaultProfile, "New Settings Profile"));
+                Settings.ApplyValues(CloneProfile(Settings.DefaultProfile, "New Settings Profile"));
             
             profileEditor = UnityEditor.Editor.CreateEditor(Settings.Profile);
             saveName = Settings.Profile.name;
@@ -104,7 +184,7 @@ namespace VolumetricInteraction.Editor
             if (profileField == Settings.Profile)
                 return;
             
-            Settings.SetProfile(profileField);
+            Settings.ApplyValues(profileField);
             
             profileEditor = UnityEditor.Editor.CreateEditor(Settings.Profile);
             saveName = Settings.Profile.name;
@@ -194,7 +274,7 @@ namespace VolumetricInteraction.Editor
         private static void DrawSaveButton(string name)
         {
             if (GUILayout.Button("Save"))
-                Settings.SetProfile(Save(Settings.Profile, name));
+                Settings.ApplyValues(Save(Settings.Profile, name));
         }
         */
     }
