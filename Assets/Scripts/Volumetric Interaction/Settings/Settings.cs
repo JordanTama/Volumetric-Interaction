@@ -60,6 +60,7 @@ namespace VolumetricInteraction
         public static void ApplyValues(SettingsProfile newProfile)
         {
             Profile.ApplyValues(newProfile);
+            EditorUtility.SetDirty(Profile);
         }
 
         private void ResetProfile()
