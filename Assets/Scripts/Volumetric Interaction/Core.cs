@@ -4,6 +4,11 @@ using UnityEngine.Rendering;
 
 namespace VolumetricInteraction
 {
+    // BUG: Source doesn't draw (but IS managed) when on the POSITIVE bounds of the volume.
+    // BUG: Alpha channel is 0-1, need to find another way to transfer radius information.
+    // TODO: Create proper conversion functions for coordinate spaces in compute shader.
+    // TODO: Implement texture blending.
+    // TODO: Implement a way of stepping through the texture generation gradually to visualise the process.
     public static class Core
     {
         private static readonly List<Volume> Volumes = new List<Volume>();
@@ -52,9 +57,6 @@ namespace VolumetricInteraction
 
         public static void InteractionUpdate(float delta)
         {
-            // if (!Settings.Profile)
-            //     Settings.ReassignProfile();
-            
             ActorTick();
             ActorUpdate();
             UpdateTexture(delta);
@@ -87,48 +89,106 @@ namespace VolumetricInteraction
             
             _texture.Create();
         }
-        
+
         private static void UpdateTexture(float delta)
         {
+            // STEP 1. Ensure the required components are present.
             if (!FocusVolume || Settings.ComputeShader is null)
             {
                 Debug.Log("No FocusVolume or ComputeShader!");
                 return;
             }
 
+            // TODO: Decay even if no sources are present in the focus volume...
             if (FocusVolume.Count <= 0)
                 return;
             
+            // STEP 2. Construct compute buffer.
+            float multiplier = 0;
             List<Seed> seeds = new List<Seed>();
             for (int i = 0; i < FocusVolume.Count; i++)
             {
                 Source source = FocusVolume.GetSource(i);
                 seeds.Add(new Seed(source.Position, source.PreviousPosition, source.Radius));
+
+                multiplier = Mathf.Max(source.Radius, multiplier);
             }
 
             _buffer = new ComputeBuffer(seeds.Count, sizeof(float) * 7);
             _buffer.SetData(seeds);
-
-            // Assign compute shader parameters
+            
+            // STEP 3. Update global compute shader variables.
             Settings.ComputeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
+            Settings.ComputeShader.SetMatrix("volume_world_to_local", FocusVolume.transform.worldToLocalMatrix);
             Settings.ComputeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
             Settings.ComputeShader.SetFloat("delta", delta);
             Settings.ComputeShader.SetFloat("decay_speed", Settings.DecaySpeed);
+            Settings.ComputeShader.SetFloat("radius_multiplier", multiplier);
             
-            Settings.ComputeShader.SetTexture(Settings.MainKernelId, Settings.ComputeResultName, _texture);
-            Settings.ComputeShader.SetBuffer(Settings.MainKernelId, "buffer", _buffer);
+            // STEP 4. Run main texture generation method.
+            if (Settings.UseBruteForce)
+                BruteUpdateTexture();
+            else
+                FloodUpdateTexture();
             
-            // Dispatch compute shader
-            Settings.ComputeShader.Dispatch(Settings.MainKernelId, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
-
-            // Assign global Shader variables
+            // STEP 5. Assign global shader variables.
             Shader.SetGlobalTexture(InteractionTexture, _texture);
             
             Shader.SetGlobalMatrix(VolumeLocalToWorld, FocusVolume.transform.localToWorldMatrix);
             Shader.SetGlobalMatrix(VolumeWorldToLocal, FocusVolume.transform.worldToLocalMatrix);
             
-            // Release the buffer
+            
+            // STEP 6. Release the buffer.
             _buffer.Release();
+        }
+        
+        private static void BruteUpdateTexture()
+        {
+            Settings.ComputeShader.SetTexture(0, "result", _texture);
+            Settings.ComputeShader.SetBuffer(0, "buffer", _buffer);
+            
+            // Dispatch compute shader
+            Settings.ComputeShader.Dispatch(0, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
+        }
+
+        private static void FloodUpdateTexture()
+        {
+            // STEP 1. Sentinel pass.
+            Settings.ComputeShader.SetTexture(3, "result", _texture);
+            Settings.ComputeShader.SetBuffer(3, "buffer", _buffer);
+            
+            Settings.ComputeShader.Dispatch(3, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
+
+            // STEP 2. Seeding pass.
+            Settings.ComputeShader.SetTexture(1, "result", _texture);
+            Settings.ComputeShader.SetBuffer(1, "buffer", _buffer);
+
+            Settings.ComputeShader.Dispatch(1, _buffer.count, 1, 1);
+            
+            // STEP 3. Jump Flooding Algorithm pass.
+            Settings.ComputeShader.SetTexture(2, "result", _texture);
+            Settings.ComputeShader.SetBuffer(2, "buffer", _buffer);
+
+            Vector3Int step = new Vector3Int(_texture.width, _texture.height, _texture.volumeDepth);
+            while (step.x > 1 || step.y > 1 || step.z >  1)
+            {
+                step.x = Mathf.Max(1, step.x / 2);
+                step.y = Mathf.Max(1, step.y / 2);
+                step.z = Mathf.Max(1, step.z / 2);
+                
+                Settings.ComputeShader.SetInts("step_size", step.x, step.y, step.z);
+
+                Vector3Int threadGroupSize =
+                    new Vector3Int(_texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
+                
+                Settings.ComputeShader.Dispatch(2, threadGroupSize.x, threadGroupSize.y, threadGroupSize.z);
+            }
+            
+            // STEP 4. Conversion pass.
+            Settings.ComputeShader.SetTexture(4, "result", _texture);
+            Settings.ComputeShader.SetBuffer(4, "buffer", _buffer);
+
+            Settings.ComputeShader.Dispatch(4, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
         }
         
         #endregion

@@ -12,6 +12,8 @@ namespace VolumetricInteraction.Editor
 
         private string _saveString = "New Profile";
         private SettingsProfile _loadTarget;
+
+        private Vector2 _editorScroll;
         
         
         [MenuItem("Volumetric Interaction/Settings")]
@@ -36,7 +38,11 @@ namespace VolumetricInteraction.Editor
             DrawSaveLoad();
             
             EditorGUILayout.Space(40);
+            
+            _editorScroll = EditorGUILayout.BeginScrollView(_editorScroll);
             _editor.OnInspectorGUI();
+            EditorGUILayout.EndScrollView();
+            
             EditorGUILayout.Space(40);
             
             DrawChangeButtons();
@@ -47,19 +53,20 @@ namespace VolumetricInteraction.Editor
             GUILayout.BeginHorizontal();
             
             GUI.enabled = _exposedProfile.CompareSettings(Settings.Profile);
+
             if (GUILayout.Button("Apply"))
             {
                 Settings.ApplyValues(_exposedProfile);
                 Core.Initialize();
                 OnEnable();
             }
-            GUI.enabled = true;
-
             if (GUILayout.Button("Revert"))
             {
                 OnEnable();
             }
-            
+
+            GUI.enabled = true;
+
             GUILayout.EndHorizontal();
         }
 
@@ -88,6 +95,7 @@ namespace VolumetricInteraction.Editor
                 SettingsProfile newProfile = CreateInstance<SettingsProfile>();
                 newProfile.ApplyValues(_exposedProfile);
                 newProfile.name = _saveString;
+                _loadTarget = null;
 
                 AssetDatabase.CreateAsset(newProfile, "Assets/Resources/Volumetric Interaction/Profiles/" + newProfile.name + ".asset");
             }

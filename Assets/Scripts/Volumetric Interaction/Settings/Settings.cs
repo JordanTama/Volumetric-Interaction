@@ -41,17 +41,10 @@ namespace VolumetricInteraction
         #region Preset accessor properties
         
         public static SettingsProfile Profile => Instance.profile;
-        
         public static Vector3Int Resolution => Profile.resolution;
-
         public static FilterMode FilterMode => Profile.filterMode;
-
         public static ComputeShader ComputeShader => Profile.computeShader;
-
-        public static int MainKernelId => Profile.mainKernelId;
-
-        public static string ComputeResultName => Profile.computeResultName;
-
+        public static bool UseBruteForce => Profile.useBruteForce;
         public static float DecaySpeed => Profile.decaySpeed;
         
         #endregion

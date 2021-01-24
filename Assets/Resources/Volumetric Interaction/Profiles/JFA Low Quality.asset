@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
-  m_Name: InternalProfile
+  m_Name: JFA Low Quality
   m_EditorClassIdentifier: 
-  resolution: {x: 64, y: 64, z: 64}
+  resolution: {x: 32, y: 16, z: 32}
   filterMode: 0
   computeShader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}
   useBruteForce: 0

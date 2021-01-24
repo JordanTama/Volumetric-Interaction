@@ -10,8 +10,7 @@ namespace VolumetricInteraction
         public Vector3Int resolution;
         public FilterMode filterMode;
         public ComputeShader computeShader;
-        public int mainKernelId;
-        public string computeResultName;
+        public bool useBruteForce;
         public float decaySpeed;
 
         public void ResetToDefault()
@@ -20,8 +19,6 @@ namespace VolumetricInteraction
             filterMode = FilterMode.Point;
             computeShader =
                 AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute Shaders/VICompute.compute");
-            mainKernelId = 0;
-            computeResultName = "result";
             decaySpeed = 0.5f;
         }
 
@@ -36,10 +33,7 @@ namespace VolumetricInteraction
             if (computeShader != other.computeShader)
                 return true;
 
-            if (mainKernelId != other.mainKernelId)
-                return true;
-
-            if (computeResultName != other.computeResultName)
+            if (useBruteForce != other.useBruteForce)
                 return true;
 
             if (!Mathf.Approximately(decaySpeed, other.decaySpeed))
@@ -53,8 +47,7 @@ namespace VolumetricInteraction
             resolution = other.resolution;
             filterMode = other.filterMode;
             computeShader = other.computeShader;
-            mainKernelId = other.mainKernelId;
-            computeResultName = other.computeResultName;
+            useBruteForce = other.useBruteForce;
             decaySpeed = other.decaySpeed;
         }
     }

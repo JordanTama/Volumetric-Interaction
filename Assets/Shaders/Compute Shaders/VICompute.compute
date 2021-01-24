@@ -1,15 +1,14 @@
 ﻿#include "VolumetricInteractionCompute.cginc"
 
-#pragma kernel main
-
+#pragma kernel brute_force
 [numthreads(8,8,8)]
-void main (const uint3 id : SV_DispatchThreadID)
+void brute_force (const uint3 id : SV_DispatchThreadID)
 {
     // First thing to do is decay the texture.
     result[id.xyz].a = move_towards(result[id.xyz].a, 0, decay_speed * delta);
 
     // Calculate interaction value based on line segment approach.
-    float4 new_value = calculate_interaction_line(id_to_world(id));
+    float4 new_value = calculate_interaction_line(pixel_to_world(id));
 
     // Edge pixels are blank so that repeating the texture doesn't actually draw it.
     if (id.x == 0 || id.x == resolution.x - 1 || id.y == 0 || id.y == resolution.y - 1 || id.z == 0 || id.z == resolution.z - 1)
@@ -17,4 +16,79 @@ void main (const uint3 id : SV_DispatchThreadID)
 
     // result[id] = new_value.a > result[id].a ? new_value : result[id];
     result[id] = blend_interaction(result[id], new_value);
+}
+
+#pragma kernel seeding
+[numthreads(1,1,1)]
+void seeding (const uint3 id : SV_DispatchThreadID)
+{    
+    // STEP 1. Convert seed from world -> local -> uv -> pixel.
+    const float3 world = buffer[id.x].position;
+    const float3 local = mul(volume_world_to_local, float4(world, 1));
+    const float3 uv = local.xyz + 0.5;
+    const float3 pixel = floor(uv * resolution);
+
+    // STEP 2. Set pixel at coordinate in result to seed uv.
+    result[pixel] = float4(uv, buffer[id.x].radius / radius_multiplier);
+}
+
+#pragma kernel jump_flooding
+[numthreads(8,8,8)]
+void jump_flooding (const uint3 id : SV_DispatchThreadID)
+{
+    const float3 uv = id.xyz / float3(resolution - 1);
+    
+    float4 output = float4(0, 0, 0, 0);
+    float min_distance = 2;
+    
+    for (int x = -1; x <= 1; x++)
+    {
+        for (int y = -1; y <= 1; y++)
+        {
+            for (int z = -1; z <= 1; z++)
+            {
+                const int3 offset = int3(x, y, z) * step_size;
+                const int3 neighbour_id = id + offset;
+
+                if (result[neighbour_id].a <= 0)
+                        continue;
+                    
+                const float dist = distance(uv, result[neighbour_id].xyz);
+                if (dist < min_distance)
+                {
+                    min_distance = dist;
+                    output = float4(result[neighbour_id]);
+                }
+            }
+        }
+    }
+
+    result[id] = output;
+}
+
+#pragma kernel sentinel
+[numthreads(8,8,8)]
+void sentinel (const uint3 id : SV_DispatchThreadID)
+{
+    result[id] = float4(0, 0, 0, 0);
+}
+
+#pragma kernel conversion
+[numthreads(8,8,8)]
+void conversion(const uint3 id : SV_DispatchThreadID)
+{
+    // STEP 1. Convert pixel to world space (pixel to world).
+    const float3 pixel_world = pixel_to_world(id);
+
+    // STEP 2. Convert seed position to world space (uv to world).
+    const float3 seed_world = uv_to_world(result[id].xyz);
+
+    // STEP 3. Calculate direction to seed.
+    const float3 to_seed = (normalize(seed_world - pixel_world) + 1) / 2;
+
+    // STEP 4. Calculate strength of seed.
+    const float strength = saturate(1 - distance(pixel_world, seed_world) / (result[id].w * radius_multiplier));
+
+    // STEP 5. Write to texture.
+    result[id] = float4(to_seed, strength);
 }

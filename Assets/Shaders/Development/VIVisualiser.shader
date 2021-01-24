@@ -5,6 +5,7 @@
         _MainTex ("Texture", 2D) = "white" {}
         _Samples ("Samples", Int) = 10
         _Opacity ("Opacity", Range(0, 1)) = 0
+        [Toggle] _DepthTest ("Depth Test", Int) = 1 
     }
     SubShader
     {
@@ -49,6 +50,7 @@
             sampler2D _CameraDepthTexture;
             
             int _Samples;
+            int _DepthTest;
             float _Opacity;
 
             fixed4 frag (v2f i) : SV_Target
@@ -69,7 +71,7 @@
                 
                 // Begin marching
                 const float step_size = dst_in_box / _Samples;
-                const float dst_limit = min(depth - dst_to_box, dst_in_box);
+                const float dst_limit = _DepthTest == 0 ? dst_in_box : min(depth - dst_to_box, dst_in_box);
                 
                 float dst_travelled = 0;
                 float4 sample = float4(0, 0, 0, 0);

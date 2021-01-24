@@ -10,11 +10,13 @@ public class Visualiser : MonoBehaviour
     [SerializeField] private Shader shader;
     [SerializeField] private int samples;
     [SerializeField] [Range(0f, 1f)] private float opacity;
+    [SerializeField] private bool depthTest;
 
     private Material _material;
     
     private static readonly int SamplesName = Shader.PropertyToID("_Samples");
     private static readonly int OpacityName = Shader.PropertyToID("_Opacity");
+    private static readonly int DepthTestName = Shader.PropertyToID("_DepthTest");
 
     private void Start()
     {
@@ -28,6 +30,7 @@ public class Visualiser : MonoBehaviour
      
         _material.SetInt(SamplesName, samples);
         _material.SetFloat(OpacityName, opacity);
+        _material.SetInt(DepthTestName, depthTest ? 1 : 0);
         Graphics.Blit(src, dest, _material);
     }
 }
