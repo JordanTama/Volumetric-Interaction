@@ -4,18 +4,21 @@
 [numthreads(8,8,8)]
 void brute_force (const uint3 id : SV_DispatchThreadID)
 {
-    // First thing to do is decay the texture.
-    result[id.xyz].a = move_towards(result[id.xyz].a, 0, decay_speed * delta);
-
     // Calculate interaction value based on line segment approach.
-    float4 new_value = calculate_interaction_line(pixel_to_world(id));
+    const float4 new_value = calculate_interaction_line(pixel_to_world(id));
 
     // Edge pixels are blank so that repeating the texture doesn't actually draw it.
-    if (id.x == 0 || id.x == resolution.x - 1 || id.y == 0 || id.y == resolution.y - 1 || id.z == 0 || id.z == resolution.z - 1)
-        new_value = float4(0, 0, 0, 0);
+    // if (id.x == 0 || id.x == resolution.x - 1 || id.y == 0 || id.y == resolution.y - 1 || id.z == 0 || id.z == resolution.z - 1)
+    //     new_value = float4(0, 0, 0, 0);
 
-    // result[id] = new_value.a > result[id].a ? new_value : result[id];
-    result[id] = blend_interaction(result[id], new_value);
+    result[id] = new_value;
+}
+
+#pragma kernel sentinel
+[numthreads(8,8,8)]
+void sentinel (const uint3 id : SV_DispatchThreadID)
+{
+    result[id] = float4(0, 0, 0, 0);
 }
 
 #pragma kernel seeding
@@ -66,16 +69,9 @@ void jump_flooding (const uint3 id : SV_DispatchThreadID)
     result[id] = output;
 }
 
-#pragma kernel sentinel
-[numthreads(8,8,8)]
-void sentinel (const uint3 id : SV_DispatchThreadID)
-{
-    result[id] = float4(0, 0, 0, 0);
-}
-
 #pragma kernel conversion
 [numthreads(8,8,8)]
-void conversion(const uint3 id : SV_DispatchThreadID)
+void conversion (const uint3 id : SV_DispatchThreadID)
 {
     // STEP 1. Convert pixel to world space (pixel to world).
     const float3 pixel_world = pixel_to_world(id);
@@ -91,4 +87,21 @@ void conversion(const uint3 id : SV_DispatchThreadID)
 
     // STEP 5. Write to texture.
     result[id] = float4(to_seed, strength);
+}
+
+#pragma kernel decay
+[numthreads(8,8,8)]
+void decay (const uint3 id : SV_DispatchThreadID)
+{
+    previous[id] = float4(previous[id].xyz, move_towards(previous[id.xyz].a, 0, decay_speed * delta));
+}
+
+#pragma kernel blending
+[numthreads(8,8,8)]
+void blending (const uint3 id : SV_DispatchThreadID)
+{
+    const float4 previous_value = previous[id];
+    const float4 new_value = result[id];
+    
+    result[id] = blend_interaction(previous_value, new_value);
 }

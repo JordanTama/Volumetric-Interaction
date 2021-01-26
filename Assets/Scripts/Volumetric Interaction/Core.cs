@@ -4,33 +4,50 @@ using UnityEngine.Rendering;
 
 namespace VolumetricInteraction
 {
-    // BUG: Source doesn't draw (but IS managed) when on the POSITIVE bounds of the volume.
-    // BUG: Alpha channel is 0-1, need to find another way to transfer radius information.
-    // TODO: Create proper conversion functions for coordinate spaces in compute shader.
-    // TODO: Implement texture blending.
+    // High-priority
+    // TODO: Clean up compute shader include file.
+    // TODO: ComputeShader probably doesn't need to be an exposed property...
+    // TODO: Create more quality settings (trails/decay toggle, etc.)
     // TODO: Implement a way of stepping through the texture generation gradually to visualise the process.
+    // TODO: Create test scripts/timelines
+    // TODO: BENCHMARKING
+    
+    // Low-priority
+    // BUG: Source doesn't draw (but IS managed) when on the POSITIVE bounds of the volume.
+    // TODO: Find dynamic approach to efficiently managing thread group sizes.
     public static class Core
     {
         private static readonly List<Volume> Volumes = new List<Volume>();
         private static readonly List<Source> Sources = new List<Source>();
 
         private static RenderTexture _texture;
+        private static RenderTexture _previous;
         private static ComputeBuffer _buffer;
         
         private static readonly int InteractionTexture = Shader.PropertyToID("interaction_texture");
         private static readonly int VolumeLocalToWorld = Shader.PropertyToID("volume_local_to_world");
         private static readonly int VolumeWorldToLocal = Shader.PropertyToID("volume_world_to_local");
+
         
         public static Volume FocusVolume => Volumes.Count > 0 ? Volumes[0] : null;
+
+
+        private enum Kernel
+        {
+            BruteForce,
+            Sentinel,
+            Seeding,
+            JumpFlooding,
+            Conversion,
+            Decay,
+            Blending
+        }
         
 
         #region Event Functions
 
         public static void Initialize()
         {
-            // if (!Settings.Profile)
-            //     Settings.ReassignProfile();
-            
             Volume[] volumes = Volumes.ToArray();
             foreach (Volume volume in volumes)
                 volume.Clear();
@@ -78,96 +95,108 @@ namespace VolumetricInteraction
 
         private static void InitializeTexture()
         {
-            _texture = new RenderTexture(Settings.Resolution.x, Settings.Resolution.y, 0, RenderTextureFormat.ARGB32)
-            { 
-                dimension = TextureDimension.Tex3D,
-                volumeDepth = Settings.Resolution.z,
-                wrapMode = TextureWrapMode.Clamp,
-                enableRandomWrite = true,
-                filterMode = Settings.FilterMode
-            };
-            
-            _texture.Create();
+            CreateTexture(out _texture);
+            CreateTexture(out _previous);
+        }
+
+        private static void CreateTexture(out RenderTexture texture)
+        {
+            texture =
+                new RenderTexture(Settings.Resolution.x, Settings.Resolution.y, 0, RenderTextureFormat.ARGB32)
+                {
+                    dimension = TextureDimension.Tex3D,
+                    volumeDepth = Settings.Resolution.z,
+                    wrapMode = TextureWrapMode.Clamp,
+                    enableRandomWrite = true,
+                    filterMode = Settings.FilterMode
+                };
+
+            texture.Create();
         }
 
         private static void UpdateTexture(float delta)
         {
-            // STEP 1. Ensure the required components are present.
-            if (!FocusVolume || Settings.ComputeShader is null)
-            {
-                Debug.Log("No FocusVolume or ComputeShader!");
-                return;
-            }
-
-            // TODO: Decay even if no sources are present in the focus volume...
-            if (FocusVolume.Count <= 0)
-                return;
+            Graphics.CopyTexture(_texture, _previous);
             
-            // STEP 2. Construct compute buffer.
-            float multiplier = 0;
-            List<Seed> seeds = new List<Seed>();
-            for (int i = 0; i < FocusVolume.Count; i++)
-            {
-                Source source = FocusVolume.GetSource(i);
-                seeds.Add(new Seed(source.Position, source.PreviousPosition, source.Radius));
+            Vector3Int threadGroups = new Vector3Int(_texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
 
-                multiplier = Mathf.Max(source.Radius, multiplier);
-            }
-
-            _buffer = new ComputeBuffer(seeds.Count, sizeof(float) * 7);
-            _buffer.SetData(seeds);
+            // STEP 1. Sentinel pass.
+            Settings.ComputeShader.SetTexture((int) Kernel.Sentinel, "result", _texture);
             
-            // STEP 3. Update global compute shader variables.
-            Settings.ComputeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
-            Settings.ComputeShader.SetMatrix("volume_world_to_local", FocusVolume.transform.worldToLocalMatrix);
-            Settings.ComputeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
+            Settings.ComputeShader.Dispatch((int) Kernel.Sentinel, threadGroups.x, threadGroups.y, threadGroups.z);
+
+            // STEP 2. Vector field generation.
+            if (FocusVolume && FocusVolume.Count > 0)
+            {
+                // STEP 2-1. Construct compute buffer.
+                float multiplier = 0;
+                List<Seed> seeds = new List<Seed>();
+                for (int i = 0; i < FocusVolume.Count; i++)
+                {
+                    Source source = FocusVolume.GetSource(i);
+                    seeds.Add(new Seed(source.Position, source.PreviousPosition, source.Radius));
+
+                    multiplier = Mathf.Max(source.Radius, multiplier);
+                }
+
+                _buffer = new ComputeBuffer(seeds.Count, sizeof(float) * 7);
+                _buffer.SetData(seeds);
+            
+                // STEP 2-2. Update global compute shader variables.
+                Settings.ComputeShader.SetMatrix("volume_local_to_world", FocusVolume.transform.localToWorldMatrix);
+                Settings.ComputeShader.SetMatrix("volume_world_to_local", FocusVolume.transform.worldToLocalMatrix);
+                Settings.ComputeShader.SetInts("resolution", _texture.width, _texture.height, _texture.volumeDepth);
+                Settings.ComputeShader.SetFloat("radius_multiplier", multiplier);
+
+                // STEP 2-3. Run main texture generation method.
+                if (Settings.UseBruteForce)
+                    BruteUpdateTexture(threadGroups);
+                else
+                    FloodUpdateTexture(threadGroups);
+                
+                Shader.SetGlobalMatrix(VolumeLocalToWorld, FocusVolume.transform.localToWorldMatrix);
+                Shader.SetGlobalMatrix(VolumeWorldToLocal, FocusVolume.transform.worldToLocalMatrix);
+            
+                // STEP 2-4. Release the buffer.
+                _buffer.Release();
+            }
+            
+            // STEP 3. Decay pass.
             Settings.ComputeShader.SetFloat("delta", delta);
             Settings.ComputeShader.SetFloat("decay_speed", Settings.DecaySpeed);
-            Settings.ComputeShader.SetFloat("radius_multiplier", multiplier);
             
-            // STEP 4. Run main texture generation method.
-            if (Settings.UseBruteForce)
-                BruteUpdateTexture();
-            else
-                FloodUpdateTexture();
+            Settings.ComputeShader.SetTexture((int) Kernel.Decay, "previous", _previous);
             
-            // STEP 5. Assign global shader variables.
+            Settings.ComputeShader.Dispatch((int) Kernel.Decay, threadGroups.x, threadGroups.y, threadGroups.z);
+
+            // STEP 4. Blend pass.
+            Settings.ComputeShader.SetTexture((int) Kernel.Blending, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.Blending, "previous", _previous);
+
+            Settings.ComputeShader.Dispatch((int) Kernel.Blending, threadGroups.x, threadGroups.y, threadGroups.z);
+            
             Shader.SetGlobalTexture(InteractionTexture, _texture);
-            
-            Shader.SetGlobalMatrix(VolumeLocalToWorld, FocusVolume.transform.localToWorldMatrix);
-            Shader.SetGlobalMatrix(VolumeWorldToLocal, FocusVolume.transform.worldToLocalMatrix);
-            
-            
-            // STEP 6. Release the buffer.
-            _buffer.Release();
         }
         
-        private static void BruteUpdateTexture()
+        private static void BruteUpdateTexture(Vector3Int threadGroups)
         {
-            Settings.ComputeShader.SetTexture(0, "result", _texture);
-            Settings.ComputeShader.SetBuffer(0, "buffer", _buffer);
+            Settings.ComputeShader.SetTexture((int) Kernel.BruteForce, "result", _texture);
+            Settings.ComputeShader.SetBuffer((int) Kernel.BruteForce, "buffer", _buffer);
             
             // Dispatch compute shader
-            Settings.ComputeShader.Dispatch(0, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
+            Settings.ComputeShader.Dispatch((int) Kernel.BruteForce, threadGroups.x, threadGroups.y, threadGroups.z);
         }
 
-        private static void FloodUpdateTexture()
+        private static void FloodUpdateTexture(Vector3Int threadGroups)
         {
-            // STEP 1. Sentinel pass.
-            Settings.ComputeShader.SetTexture(3, "result", _texture);
-            Settings.ComputeShader.SetBuffer(3, "buffer", _buffer);
-            
-            Settings.ComputeShader.Dispatch(3, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
-
             // STEP 2. Seeding pass.
-            Settings.ComputeShader.SetTexture(1, "result", _texture);
-            Settings.ComputeShader.SetBuffer(1, "buffer", _buffer);
+            Settings.ComputeShader.SetTexture((int) Kernel.Seeding, "result", _texture);
+            Settings.ComputeShader.SetBuffer((int) Kernel.Seeding, "buffer", _buffer);
 
-            Settings.ComputeShader.Dispatch(1, _buffer.count, 1, 1);
+            Settings.ComputeShader.Dispatch((int) Kernel.Seeding, _buffer.count, 1, 1);
             
             // STEP 3. Jump Flooding Algorithm pass.
-            Settings.ComputeShader.SetTexture(2, "result", _texture);
-            Settings.ComputeShader.SetBuffer(2, "buffer", _buffer);
+            Settings.ComputeShader.SetTexture((int) Kernel.JumpFlooding, "result", _texture);
 
             Vector3Int step = new Vector3Int(_texture.width, _texture.height, _texture.volumeDepth);
             while (step.x > 1 || step.y > 1 || step.z >  1)
@@ -177,18 +206,14 @@ namespace VolumetricInteraction
                 step.z = Mathf.Max(1, step.z / 2);
                 
                 Settings.ComputeShader.SetInts("step_size", step.x, step.y, step.z);
-
-                Vector3Int threadGroupSize =
-                    new Vector3Int(_texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
                 
-                Settings.ComputeShader.Dispatch(2, threadGroupSize.x, threadGroupSize.y, threadGroupSize.z);
+                Settings.ComputeShader.Dispatch((int) Kernel.JumpFlooding, threadGroups.x, threadGroups.y, threadGroups.z);
             }
             
             // STEP 4. Conversion pass.
-            Settings.ComputeShader.SetTexture(4, "result", _texture);
-            Settings.ComputeShader.SetBuffer(4, "buffer", _buffer);
+            Settings.ComputeShader.SetTexture((int) Kernel.Conversion, "result", _texture);
 
-            Settings.ComputeShader.Dispatch(4, _texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
+            Settings.ComputeShader.Dispatch((int) Kernel.Conversion, threadGroups.x, threadGroups.y, threadGroups.z);
         }
         
         #endregion
@@ -249,7 +274,7 @@ namespace VolumetricInteraction
                 Sources.Remove(source);
         }
 
-        public static void Assign(Source source, Volume volume)
+        private static void Assign(Source source, Volume volume)
         {
             if (!Sources.Contains(source)) return;
 

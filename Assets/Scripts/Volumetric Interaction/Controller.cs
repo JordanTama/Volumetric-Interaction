@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace VolumetricInteraction
 {
+    // TODO: Change generate to generateInEditor and move both exposed variables to SettingsProfile.
     [ExecuteAlways, AddComponentMenu("Volumetric Interaction/Controller")]
     public class Controller : ActorBase
     {

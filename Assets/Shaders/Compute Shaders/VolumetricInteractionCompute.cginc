@@ -6,6 +6,8 @@
 };
 
 RWTexture3D<float4> result;
+RWTexture3D<float4> previous;
+
 RWStructuredBuffer<seed> buffer;
 
 float4x4 volume_local_to_world;
