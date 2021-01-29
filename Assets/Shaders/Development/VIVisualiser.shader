@@ -7,6 +7,7 @@
         _Opacity ("Opacity", Range(0, 1)) = 0
         [Toggle] _DepthTest ("Depth Test", Int) = 1 
     }
+    
     SubShader
     {
         Cull Off ZWrite Off ZTest Always

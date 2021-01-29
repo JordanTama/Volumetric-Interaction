@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,11 +13,14 @@ namespace VolumetricInteraction
         
         // Serialized member variables
         [SerializeField] private SettingsProfile profile;
+        [SerializeField] private ComputeShader shader;
+        [SerializeField] private bool drawGizmos;
+        [SerializeField] private bool generateInEditor;
         
         // Singleton management
         private static Settings _instance;
 
-        private static Settings Instance
+        public static Settings Instance
         {
             get
             {
@@ -30,23 +32,37 @@ namespace VolumetricInteraction
                 
                 Settings instance = CreateInstance<Settings>();
                 instance.profile = AssetDatabase.LoadAssetAtPath<SettingsProfile>(ProfilePath);
-                
+
                 AssetDatabase.CreateAsset(instance, InstancePath);
 
                 return _instance = instance;
             }
         }
 
+        public static ComputeShader Shader
+        {
+            get
+            {
+                if (!Instance.shader)
+                    Instance.shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute Shaders/VICompute.compute");
+
+                return Instance.shader;
+            }
+        }
+
         
-        #region Preset accessor properties
+        #region Profile accessor properties
         
         public static SettingsProfile Profile => Instance.profile;
         public static Vector3Int Resolution => Profile.resolution;
         public static FilterMode FilterMode => Profile.filterMode;
-        public static ComputeShader ComputeShader => Profile.computeShader;
-        public static bool UseBruteForce => Profile.useBruteForce;
+        public static bool UseDecay => Profile.useDecay;
         public static float DecaySpeed => Profile.decaySpeed;
-        
+        public static bool UseBruteForce => Profile.useBruteForce;
+        public static float TimeStep => Profile.timeStep;
+        public static bool DrawGizmos => Instance.drawGizmos;
+        public static bool GenerateInEditor => Instance.generateInEditor;
+
         #endregion
         
 
@@ -54,12 +70,6 @@ namespace VolumetricInteraction
         {
             Profile.ApplyValues(newProfile);
             EditorUtility.SetDirty(Profile);
-        }
-
-        private void ResetProfile()
-        {
-            profile.ResetToDefault();
-            profile.name = "internalProfile";
         }
     }
 }

@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolution: {x: 128, y: 32, z: 128}
   filterMode: 0
-  computeShader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}
-  useBruteForce: 0
+  useDecay: 1
   decaySpeed: 0.5
+  useBruteForce: 0
+  timeStep: 0.05
+  drawGizmos: 1

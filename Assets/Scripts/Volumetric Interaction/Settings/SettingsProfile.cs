@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor;
 using UnityEngine;
 
 namespace VolumetricInteraction
@@ -9,17 +8,19 @@ namespace VolumetricInteraction
     {
         public Vector3Int resolution;
         public FilterMode filterMode;
-        public ComputeShader computeShader;
-        public bool useBruteForce;
+        public bool useDecay;
         public float decaySpeed;
+        public bool useBruteForce;
+        public float timeStep;
 
         public void ResetToDefault()
         {
             resolution = new Vector3Int(64, 64, 64);
             filterMode = FilterMode.Point;
-            computeShader =
-                AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute Shaders/VICompute.compute");
+            useDecay = true;
             decaySpeed = 0.5f;
+            useBruteForce = false;
+            timeStep = 0.05f;
         }
 
         public bool CompareSettings(SettingsProfile other)
@@ -30,13 +31,16 @@ namespace VolumetricInteraction
             if (filterMode != other.filterMode)
                 return true;
 
-            if (computeShader != other.computeShader)
+            if (useDecay != other.useDecay)
+                return true;
+
+            if (!Mathf.Approximately(decaySpeed, other.decaySpeed))
                 return true;
 
             if (useBruteForce != other.useBruteForce)
                 return true;
 
-            if (!Mathf.Approximately(decaySpeed, other.decaySpeed))
+            if (!Mathf.Approximately(timeStep, other.timeStep))
                 return true;
 
             return false;
@@ -46,9 +50,10 @@ namespace VolumetricInteraction
         {
             resolution = other.resolution;
             filterMode = other.filterMode;
-            computeShader = other.computeShader;
-            useBruteForce = other.useBruteForce;
+            useDecay = other.useDecay;
             decaySpeed = other.decaySpeed;
+            useBruteForce = other.useBruteForce;
+            timeStep = other.timeStep;
         }
     }
 }

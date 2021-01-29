@@ -7,9 +7,6 @@ namespace VolumetricInteraction
     [ExecuteAlways, AddComponentMenu("Volumetric Interaction/Controller")]
     public class Controller : ActorBase
     {
-        [SerializeField] private bool generate;
-        [SerializeField] private float timeStep = 0.02f;
-
         private float _timer;
         
 
@@ -20,10 +17,16 @@ namespace VolumetricInteraction
         private void Update()
         {
             _timer -= Time.deltaTime;
-            if (!generate || _timer > 0f) return;
+            if (_timer > 0f) return;
             
-            Core.InteractionUpdate(timeStep - _timer);
-            _timer = timeStep;
+            Core.InteractionUpdate(Settings.TimeStep - _timer);
+            _timer = Settings.TimeStep;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (Settings.DrawGizmos)
+                Core.DrawDebug();
         }
     }
 }
