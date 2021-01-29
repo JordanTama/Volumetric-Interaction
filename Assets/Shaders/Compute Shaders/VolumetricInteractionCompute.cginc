@@ -5,18 +5,21 @@
     float radius;
 };
 
-RWTexture3D<float4> result;
+RWTexture3D<float4> current;
 RWTexture3D<float4> previous;
 
 RWStructuredBuffer<seed> buffer;
 
 float4x4 volume_local_to_world;
 float4x4 volume_world_to_local;
+
 int3 resolution;
+int3 step_size;
+
+float radius_multiplier;
 float delta;
 float decay_speed;
-float radius_multiplier;
-int3 step_size;
+
 
 float move_towards(float current, float target, float max_delta)
 {
@@ -35,6 +38,7 @@ float3 closest_point_on_line_segment(float3 p, float3 a, float3 b)
     t = saturate(t);
     return (1 - t) * a + t * b;
 }
+
 
 float3 pixel_to_world(float3 id)
 {
@@ -56,6 +60,7 @@ float3 uv_to_world(float3 uv)
     return mul(volume_local_to_world, float4(local, 1)).xyz;
 }
 
+
 float4 blend_interaction(float4 from, float4 to)
 {
     float4 final_value = float4(to.xyz, max(from.a, to.a));
@@ -66,6 +71,7 @@ float4 blend_interaction(float4 from, float4 to)
     
     return final_value;
 }
+
 
 float4 calculate_interaction_point(float3 world)
 {

@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 namespace VolumetricInteraction
 {
     // High-priority
-    // TODO: Clean up compute shader include file.
     // TODO: ComputeShader probably doesn't need to be an exposed property...
     // TODO: Create more quality settings (trails/decay toggle, etc.)
     // TODO: Implement a way of stepping through the texture generation gradually to visualise the process.
@@ -121,7 +120,7 @@ namespace VolumetricInteraction
             Vector3Int threadGroups = new Vector3Int(_texture.width / 8, _texture.height / 8, _texture.volumeDepth / 8);
 
             // STEP 1. Sentinel pass.
-            Settings.ComputeShader.SetTexture((int) Kernel.Sentinel, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.Sentinel, "current", _texture);
             
             Settings.ComputeShader.Dispatch((int) Kernel.Sentinel, threadGroups.x, threadGroups.y, threadGroups.z);
 
@@ -170,7 +169,7 @@ namespace VolumetricInteraction
             Settings.ComputeShader.Dispatch((int) Kernel.Decay, threadGroups.x, threadGroups.y, threadGroups.z);
 
             // STEP 4. Blend pass.
-            Settings.ComputeShader.SetTexture((int) Kernel.Blending, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.Blending, "current", _texture);
             Settings.ComputeShader.SetTexture((int) Kernel.Blending, "previous", _previous);
 
             Settings.ComputeShader.Dispatch((int) Kernel.Blending, threadGroups.x, threadGroups.y, threadGroups.z);
@@ -180,7 +179,7 @@ namespace VolumetricInteraction
         
         private static void BruteUpdateTexture(Vector3Int threadGroups)
         {
-            Settings.ComputeShader.SetTexture((int) Kernel.BruteForce, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.BruteForce, "current", _texture);
             Settings.ComputeShader.SetBuffer((int) Kernel.BruteForce, "buffer", _buffer);
             
             // Dispatch compute shader
@@ -190,13 +189,13 @@ namespace VolumetricInteraction
         private static void FloodUpdateTexture(Vector3Int threadGroups)
         {
             // STEP 2. Seeding pass.
-            Settings.ComputeShader.SetTexture((int) Kernel.Seeding, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.Seeding, "current", _texture);
             Settings.ComputeShader.SetBuffer((int) Kernel.Seeding, "buffer", _buffer);
 
             Settings.ComputeShader.Dispatch((int) Kernel.Seeding, _buffer.count, 1, 1);
             
             // STEP 3. Jump Flooding Algorithm pass.
-            Settings.ComputeShader.SetTexture((int) Kernel.JumpFlooding, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.JumpFlooding, "current", _texture);
 
             Vector3Int step = new Vector3Int(_texture.width, _texture.height, _texture.volumeDepth);
             while (step.x > 1 || step.y > 1 || step.z >  1)
@@ -211,7 +210,7 @@ namespace VolumetricInteraction
             }
             
             // STEP 4. Conversion pass.
-            Settings.ComputeShader.SetTexture((int) Kernel.Conversion, "result", _texture);
+            Settings.ComputeShader.SetTexture((int) Kernel.Conversion, "current", _texture);
 
             Settings.ComputeShader.Dispatch((int) Kernel.Conversion, threadGroups.x, threadGroups.y, threadGroups.z);
         }
