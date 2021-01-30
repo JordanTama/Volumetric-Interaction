@@ -80,7 +80,7 @@
                 while (dst_travelled < dst_limit)
                 {
                     const float3 ray_position = ray_origin + ray_direction * (dst_to_box + dst_travelled);
-                    const float4 samp = sample_interaction_world(mul(volume_local_to_world, float4(ray_position, 1)));
+                    const float4 samp = get_raw_world(mul(volume_local_to_world, float4(ray_position, 1)));
                     
                     if (samp.a > 0)
                     {

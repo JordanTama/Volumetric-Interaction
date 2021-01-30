@@ -15,4 +15,4 @@ MonoBehaviour:
   profile: {fileID: 11400000, guid: 9e723c87dbee20a4aa7fa5d56c5c0129, type: 2}
   shader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}
   drawGizmos: 1
-  generateInEditor: 0
+  generateInEditor: 1

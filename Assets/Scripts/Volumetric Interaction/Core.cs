@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 namespace VolumetricInteraction
 {
     // High-priority
-    // TODO: Clean up VolumetricInteraction.cginc (ensure functions are returning what they should be returning - conversion, etc.)
     // TODO: Implement a way of stepping through the texture generation gradually to visualise the process.
     // TODO: Create test scripts/timelines
     // TODO: BENCHMARKING

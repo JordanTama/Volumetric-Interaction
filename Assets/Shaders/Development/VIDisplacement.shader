@@ -35,7 +35,8 @@
             float4 world_position = mul(unity_ObjectToWorld, v.vertex);
             float3 world_normal = UnityObjectToWorldNormal(v.normal);
 
-            float3 direction = get_displacement_world(world_position);
+            float4 interaction = get_force_world(world_position);
+            float3 direction = interaction.xyz * interaction.w;
             float3 projection =  world_normal * (dot(direction, world_normal) / pow(length(world_normal), 2));
             
             world_position.xyz -= projection * _Displacement;
