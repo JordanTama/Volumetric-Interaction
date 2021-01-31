@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 namespace VolumetricInteraction
 {
     // High-priority
-    // TODO: Implement a way of stepping through the texture generation gradually to visualise the process.
     // TODO: Create test scripts/timelines
     // TODO: BENCHMARKING
     
@@ -29,7 +28,7 @@ namespace VolumetricInteraction
 
         
         public static Volume FocusVolume => Volumes.Count > 0 ? Volumes[0] : null;
-
+        
 
         private enum Kernel
         {
@@ -195,11 +194,15 @@ namespace VolumetricInteraction
 
         private static void FloodUpdateTexture(Vector3Int threadGroups)
         {
+            int stepCount = 0;
+            
             // STEP 2. Seeding pass.
             Settings.Shader.SetTexture((int) Kernel.Seeding, "current", _texture);
             Settings.Shader.SetBuffer((int) Kernel.Seeding, "buffer", _buffer);
 
             Settings.Shader.Dispatch((int) Kernel.Seeding, _buffer.count, 1, 1);
+            
+            if (CheckStep()) return;
             
             // STEP 3. Jump Flooding Algorithm pass.
             Settings.Shader.SetTexture((int) Kernel.JumpFlooding, "current", _texture);
@@ -214,12 +217,19 @@ namespace VolumetricInteraction
                 Settings.Shader.SetInts("step_size", step.x, step.y, step.z);
                 
                 Settings.Shader.Dispatch((int) Kernel.JumpFlooding, threadGroups.x, threadGroups.y, threadGroups.z);
+                
+                if (CheckStep()) return;
             }
             
             // STEP 4. Conversion pass.
             Settings.Shader.SetTexture((int) Kernel.Conversion, "current", _texture);
 
             Settings.Shader.Dispatch((int) Kernel.Conversion, threadGroups.x, threadGroups.y, threadGroups.z);
+
+            bool CheckStep()
+            {
+                return stepCount++ >= Settings.Steps;
+            }
         }
         
         #endregion

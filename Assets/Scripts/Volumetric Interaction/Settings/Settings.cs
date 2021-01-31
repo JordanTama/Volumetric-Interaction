@@ -16,6 +16,7 @@ namespace VolumetricInteraction
         [SerializeField] private ComputeShader shader;
         [SerializeField] private bool drawGizmos;
         [SerializeField] private bool generateInEditor;
+        [SerializeField] private int steps;
         
         // Singleton management
         private static Settings _instance;
@@ -62,6 +63,7 @@ namespace VolumetricInteraction
         public static float TimeStep => Profile.timeStep;
         public static bool DrawGizmos => Instance.drawGizmos;
         public static bool GenerateInEditor => Instance.generateInEditor;
+        public static int Steps => Instance.steps;
 
         #endregion
         
