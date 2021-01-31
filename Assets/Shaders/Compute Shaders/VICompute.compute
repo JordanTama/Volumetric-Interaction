@@ -40,29 +40,30 @@ void seeding (const uint3 id : SV_DispatchThreadID)
 void jump_flooding (const uint3 id : SV_DispatchThreadID)
 {
     const float3 uv = id.xyz / float3(resolution - 1);
+    const float3 pixel_world = uv_to_world(uv);
     
     float4 output = float4(0, 0, 0, 0);
-    float min_distance = 2;
+    float max_strength = 0;
     
-    for (int x = -1; x <= 1; x++)
+    for (int i = 0; i < 27; i++)
     {
-        for (int y = -1; y <= 1; y++)
-        {
-            for (int z = -1; z <= 1; z++)
-            {
-                const int3 offset = int3(x, y, z) * step_size;
-                const int3 neighbour_id = id + offset;
+        const int3 offset = offsets[i];
+        const int3 neighbour_id = id + offset * step_size;
 
-                if (current[neighbour_id].a <= 0)
-                        continue;
-                    
-                const float dist = distance(uv, current[neighbour_id].xyz);
-                if (dist < min_distance)
-                {
-                    min_distance = dist;
-                    output = float4(current[neighbour_id]);
-                }
-            }
+        if (current[neighbour_id].a <= 0)
+            continue;
+
+        const float3 world_position = uv_to_world(current[neighbour_id].xyz);
+        
+        const float strength = 1 - saturate(
+            distance(pixel_world, world_position)
+            / (current[neighbour_id].w * radius_multiplier)
+            );
+        
+        if (strength > max_strength)
+        {
+            max_strength = strength;
+            output = float4(current[neighbour_id]);
         }
     }
 
@@ -83,7 +84,7 @@ void conversion (const uint3 id : SV_DispatchThreadID)
     const float3 to_seed = (normalize(seed_world - pixel_world) + 1) / 2;
 
     // STEP 4. Calculate strength of seed.
-    const float strength = saturate(1 - distance(pixel_world, seed_world) / (current[id].w * radius_multiplier));
+    const float strength = 1.0 - saturate(distance(pixel_world, seed_world) / (current[id].w * radius_multiplier));
 
     // STEP 5. Write to texture.
     current[id] = float4(to_seed, strength);

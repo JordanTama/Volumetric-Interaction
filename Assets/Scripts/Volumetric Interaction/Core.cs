@@ -12,6 +12,7 @@ namespace VolumetricInteraction
     // Low-priority
     // BUG: When not generating in editor, the VI texture shows as grey.
     // BUG: Source doesn't draw (but IS managed) when on the POSITIVE bounds of the volume.
+    // TODO: Maybe only recalculate buffer if a source has been added/removed?
     // TODO: Find dynamic approach to efficiently managing thread group sizes.
     public static class Core
     {

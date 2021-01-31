@@ -3,16 +3,18 @@ using UnityEngine;
 
 namespace VolumetricInteraction
 {
-    // TODO: Change generate to generateInEditor and move both exposed variables to SettingsProfile.
     [ExecuteAlways, AddComponentMenu("Volumetric Interaction/Controller")]
     public class Controller : ActorBase
     {
         private float _timer;
+
         
+        #region Unity Event Functions
 
-        private void OnEnable() => Core.Initialize();
-
-        public override void DrawDebug() => Core.DrawDebug();
+        private void OnEnable()
+        {
+            Core.Initialize();
+        }
         
         private void Update()
         {
@@ -23,10 +25,22 @@ namespace VolumetricInteraction
             _timer = Settings.TimeStep;
         }
 
+        #endregion
+        
+        
+        #region Debugging
+
+        public override void DrawDebug()
+        {
+            Core.DrawDebug();
+        }
+        
         private void OnDrawGizmos()
         {
             if (Settings.DrawGizmos)
                 Core.DrawDebug();
         }
+        
+        #endregion
     }
 }

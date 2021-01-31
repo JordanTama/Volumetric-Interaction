@@ -20,6 +20,36 @@ float radius_multiplier;
 float delta;
 float decay_speed;
 
+static int3 offsets[27] = {
+    int3(-1, -1, -1),
+    int3(-1, -1, 0),
+    int3(-1, -1, 1),
+    int3(-1, 0, -1),
+    int3(-1, 0, 0),
+    int3(-1, 0, 1),
+    int3(-1, 1, -1),
+    int3(-1, 1, 0),
+    int3(-1, 1, 1),
+    int3(0, -1, -1),
+    int3(0, -1, 0),
+    int3(0, -1, 1),
+    int3(0, 0, -1),
+    int3(0, 0, 0),
+    int3(0, 0, 1),
+    int3(0, 1, -1),
+    int3(0, 1, 0),
+    int3(0, 1, 1),
+    int3(1, -1, -1),
+    int3(1, -1, 0),
+    int3(1, -1, 1),
+    int3(1, 0, -1),
+    int3(1, 0, 0),
+    int3(1, 0, 1),
+    int3(1, 1, -1),
+    int3(1, 1, 0),
+    int3(1, 1, 1)
+};
+
 
 float move_towards(float current, float target, float max_delta)
 {
