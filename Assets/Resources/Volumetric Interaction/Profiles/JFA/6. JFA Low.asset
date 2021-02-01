@@ -10,12 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
-  m_Name: JFA Medium Quality
+  m_Name: 6. JFA Low
   m_EditorClassIdentifier: 
-  resolution: {x: 128, y: 32, z: 128}
-  filterMode: 0
+  resolution: {x: 64, y: 8, z: 64}
+  filterMode: 1
   useDecay: 1
   decaySpeed: 0.5
   useBruteForce: 0
   timeStep: 0.05
-  drawGizmos: 1

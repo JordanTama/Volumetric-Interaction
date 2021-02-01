@@ -80,7 +80,8 @@
                 while (dst_travelled < dst_limit)
                 {
                     const float3 ray_position = ray_origin + ray_direction * (dst_to_box + dst_travelled);
-                    const float4 samp = get_raw_world(mul(volume_local_to_world, float4(ray_position, 1)));
+                    const float3 world_position = mul(volume_local_to_world, float4(ray_position, 1));
+                    const float4 samp = get_raw_world(world_position);
                     
                     if (samp.a > 0)
                     {
@@ -93,6 +94,7 @@
                 
                 fixed4 col = tex2D(_MainTex, i.uv);
 
+                
                 const bool draw_interaction = sample.a > 0;
                 
                 return float4(draw_interaction ? lerp(sample.rgb, col.rgb, _Opacity) : col.rgb, col.a);

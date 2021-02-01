@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
-  m_Name: JFA High
+  m_Name: 3. JFA Cube High
   m_EditorClassIdentifier: 
-  resolution: {x: 256, y: 64, z: 265}
-  filterMode: 0
-  computeShader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}
-  useBruteForce: 0
+  resolution: {x: 96, y: 96, z: 96}
+  filterMode: 2
+  useDecay: 1
   decaySpeed: 0.5
+  useBruteForce: 0
+  timeStep: 0
