@@ -28,6 +28,8 @@ namespace VolumetricInteraction.Benchmarking
             OnTick();
             bool ended = _time >= _duration;
             
+            Logger.Tick();
+            
             if (ended)
                 OnEnd();
         }

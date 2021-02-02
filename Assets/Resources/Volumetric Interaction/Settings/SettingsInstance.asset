@@ -16,4 +16,5 @@ MonoBehaviour:
   shader: {fileID: 7200000, guid: 5e4f8cd09eeab004e9464bcd60efb949, type: 3}
   drawGizmos: 1
   generateInEditor: 1
-  steps: 8
+  steps: 6
+  debugSteps: 0

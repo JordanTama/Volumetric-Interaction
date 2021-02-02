@@ -2,21 +2,21 @@
 
 namespace VolumetricInteraction.Benchmarking
 {
-    public class Parameter<T>
+    public class Parameter<T> : IParameter
     {
         private readonly T initial;
-        private readonly T target;
 
         private readonly Func<T, T> increment;
+        private readonly Func<T, bool> completed;
 
         private T current;
             
-        public Parameter(T initial, T target, Func<T, T> increment)
+        public Parameter(T initial, Func<T, T> increment, Func<T, bool> completed)
         {
             this.initial = initial;
-            this.target = target;
 
             this.increment = increment;
+            this.completed = completed;
 
             current = initial;
         }
@@ -29,6 +29,6 @@ namespace VolumetricInteraction.Benchmarking
 
         public void Reset() => current = initial;
 
-        public bool Finished() => current.Equals(target);
+        public bool Finished() => completed(current);
     }
 }

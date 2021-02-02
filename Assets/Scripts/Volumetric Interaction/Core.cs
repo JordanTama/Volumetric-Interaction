@@ -229,7 +229,7 @@ namespace VolumetricInteraction
 
             bool CheckStep()
             {
-                return stepCount++ >= Settings.Steps;
+                return Settings.DebugSteps && stepCount++ >= Settings.Steps;
             }
         }
         

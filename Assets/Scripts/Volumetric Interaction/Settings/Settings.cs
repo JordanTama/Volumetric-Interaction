@@ -17,6 +17,7 @@ namespace VolumetricInteraction
         [SerializeField] private bool drawGizmos;
         [SerializeField] private bool generateInEditor;
         [SerializeField] private int steps;
+        [SerializeField] private bool debugSteps;
         
         // Singleton management
         private static Settings _instance;
@@ -64,6 +65,7 @@ namespace VolumetricInteraction
         public static bool DrawGizmos => Instance.drawGizmos;
         public static bool GenerateInEditor => Instance.generateInEditor;
         public static int Steps => Instance.steps;
+        public static bool DebugSteps => Instance.debugSteps;
 
         #endregion
         

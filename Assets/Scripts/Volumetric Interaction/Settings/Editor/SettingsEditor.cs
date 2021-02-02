@@ -10,8 +10,7 @@ namespace VolumetricInteraction.Editor
         private SerializedProperty drawGizmos;
         private SerializedProperty generateInEditor;
         private SerializedProperty steps;
-
-        private bool _debugSteps = false;
+        private SerializedProperty debugSteps;
 
         
         private void OnEnable()
@@ -19,6 +18,7 @@ namespace VolumetricInteraction.Editor
             drawGizmos = serializedObject.FindProperty("drawGizmos");
             generateInEditor = serializedObject.FindProperty("generateInEditor");
             steps = serializedObject.FindProperty("steps");
+            debugSteps = serializedObject.FindProperty("debugSteps");
         }
 
         public override void OnInspectorGUI()
@@ -44,17 +44,17 @@ namespace VolumetricInteraction.Editor
             {
                 EditorGUILayout.BeginHorizontal();
 
-                _debugSteps = EditorGUILayout.Toggle("Debug Steps", _debugSteps);
+                debugSteps.boolValue = EditorGUILayout.Toggle("Debug Steps", debugSteps.boolValue);
                 EditorGUILayout.BeginVertical();
-                GUI.enabled = _debugSteps;
+                GUI.enabled = debugSteps.boolValue;
                 int sliderValue = EditorGUILayout.IntSlider(steps.intValue, 0, maxSteps);
                 GUI.enabled = true;
 
-                steps.intValue = _debugSteps
+                steps.intValue = debugSteps.boolValue
                     ? sliderValue
                     : maxSteps;
                 
-                if (_debugSteps)
+                if (debugSteps.boolValue)
                     EditorGUILayout.LabelField(names[steps.intValue]);
                 
                 EditorGUILayout.EndVertical();

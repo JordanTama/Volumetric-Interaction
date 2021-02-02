@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace VolumetricInteraction.Benchmarking
 {
-    // TODO: Implement settings iteration.
     // TODO: Implement logging functionality.
     // TODO: Implement log output.
     public class Controller : MonoBehaviour
@@ -12,51 +11,49 @@ namespace VolumetricInteraction.Benchmarking
         [SerializeField] private float roundDuration;
         [SerializeField] private int roundSeed;
         
-        private Settings _settings;
+        private State state;
         private SettingsProfile _profile;
 
         [ContextMenu("Benchmark")]
         public void Benchmark()
         {
             _profile = ScriptableObject.CreateInstance<SettingsProfile>();
-            _profile.ApplyValues(VolumetricInteraction.Settings.Profile);
+            _profile.ApplyValues(Settings.Profile);
 
             Parameter<Vector3Int> resolutionParam = new Parameter<Vector3Int>(new Vector3Int(32, 32, 32),
-                new Vector3Int(256, 256, 256), v => v + new Vector3Int(32, 32, 32));
+                v => v + new Vector3Int(32, 32, 32), v => v.Equals(new Vector3Int(128, 128, 128)));
 
-            Parameter<int> sourceCountParam = new Parameter<int>(25, 100, v => v + 25);
+            Parameter<int> sourceCountParam = new Parameter<int>(0, v => v + 25, v => v >= 100);
 
-            _settings = new Settings(resolutionParam, sourceCountParam);
+            Parameter<float> timeStepParam = new Parameter<float>(0f, v => v + 0.05f, v => v >= 0.1f);
+
+            state = new State(resolutionParam, sourceCountParam, timeStepParam);
 
             BeginRound();
         }
         
         private void BeginRound()
         {
-            _profile.resolution = _settings.Resolution;
-            VolumetricInteraction.Settings.ApplyValues(_profile);
+            _profile.resolution = state.Resolution;
+            _profile.timeStep = state.TimeStep;
             
-            tunnel.Initialize(OnRoundEnd, _settings.SourceCount, roundDuration, roundSeed);
+            Settings.ApplyValues(_profile);
+            
+            Logger.Begin(state);
+            
+            tunnel.Initialize(OnRoundEnd, state.SourceCount, roundDuration, roundSeed);
         }
 
         private void OnRoundEnd()
         {
-            if (_settings.Resolution.Finished() && _settings.SourceCount.Finished())
-                return;
+            Logger.End();
             
-            if (_settings.SourceCount.Finished())
-            {
-                _settings.SourceCount.Reset();
-                _settings.Resolution.Increment();
-            }
-            else
-            {
-                _settings.SourceCount.Increment();
-            }
+            if (state.Completed)
+                return;
+
+            state.Increment();
             
             BeginRound();
         }
-        
-        
     }
 }
