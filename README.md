@@ -52,8 +52,5 @@ traditional approaches can be subverted, resulting in more immersive virtual env
     - [ ] **3.3.1:** Export to supported target platforms.
   
 ## **Notes**
-- [ ] Clean up compute shader
-- [ ] Create decay kernel
-- [ ] Add decay even when no sources present
-- [ ] Add blending for JFA
+- [ ] Make UpdateTexture asynchronous
 - [ ] Add line calculation for JFA

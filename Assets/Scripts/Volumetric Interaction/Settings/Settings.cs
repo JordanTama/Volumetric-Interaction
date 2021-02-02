@@ -72,6 +72,8 @@ namespace VolumetricInteraction
         {
             Profile.ApplyValues(newProfile);
             EditorUtility.SetDirty(Profile);
+            
+            Core.Initialize();
         }
     }
 }

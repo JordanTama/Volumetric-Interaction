@@ -11,15 +11,15 @@ namespace VolumetricInteraction.Editor
 
         private void OnEnable()
         {
-            _resolution = serializedObject.FindProperty("resolution");
+            // _resolution = serializedObject.FindProperty("resolution");
         }
 
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            Vector3Int res = _resolution.vector3IntValue;
-            EditorGUILayout.LabelField((res.x * res.y * res.z) + " pixels");
+            // Vector3Int res = _resolution.vector3IntValue;
+            // EditorGUILayout.LabelField((res.x * res.y * res.z) + " pixels");
         }
     }
 }

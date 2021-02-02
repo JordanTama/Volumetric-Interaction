@@ -9,6 +9,7 @@ namespace VolumetricInteraction
     // TODO: BENCHMARKING
     
     // Low-priority
+    // BUG: Black pixel at 0, 0, 0 in VI texture when using JFA.
     // BUG: When not generating in editor, the VI texture shows as grey.
     // BUG: Source doesn't draw (but IS managed) when on the POSITIVE bounds of the volume.
     // TODO: Maybe only recalculate buffer if a source has been added/removed?

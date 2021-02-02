@@ -7,14 +7,12 @@ namespace VolumetricInteraction
     [ExecuteAlways, AddComponentMenu("Volumetric Interaction/Source")]
     public class Source : ActorBase
     {
-        [SerializeField] private float radius;
-        
         private Volume _volume;
 
         public Vector3 Position { get; private set; }
         public Vector3 PreviousPosition { get; private set; }
 
-        public float Radius => radius;
+        public float Radius => Mathf.Max(transform.localScale.x, transform.localScale.y, transform.localScale.z) / 2f;
         
         
         #region Unity Event Functions
@@ -69,7 +67,7 @@ namespace VolumetricInteraction
         public override void DrawDebug()
         {
             Gizmos.color = _volume is null ? Color.red : Color.yellow;
-            Gizmos.DrawWireSphere(Position, radius);
+            Gizmos.DrawWireSphere(Position, Radius);
         }
 
         #endregion

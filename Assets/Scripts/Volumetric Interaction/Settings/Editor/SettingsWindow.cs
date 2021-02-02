@@ -106,7 +106,6 @@ namespace VolumetricInteraction.Editor
             if (GUILayout.Button("Apply"))
             {
                 Settings.ApplyValues(_exposedProfile);
-                Core.Initialize();
                 OnEnable();
             }
             if (GUILayout.Button("Revert"))
