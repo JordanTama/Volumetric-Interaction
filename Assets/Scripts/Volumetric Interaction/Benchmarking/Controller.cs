@@ -14,7 +14,7 @@ namespace VolumetricInteraction.Benchmarking
         private State state;
         private SettingsProfile _profile;
 
-        [ContextMenu("Benchmark")]
+        
         public void Benchmark()
         {
             _profile = ScriptableObject.CreateInstance<SettingsProfile>();
