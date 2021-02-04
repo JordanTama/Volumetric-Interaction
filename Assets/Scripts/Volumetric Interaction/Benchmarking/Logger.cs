@@ -11,6 +11,17 @@ namespace VolumetricInteraction.Benchmarking
         private static int _frames;
         private static float _delta;
 
+        
+        public static string DeviceUniqueIdentifier => _data ? _data.deviceUniqueIdentifier : ""; 
+        public static string GraphicsDeviceName => _data ? _data.graphicsDeviceName : ""; 
+        public static string ProcessorType => _data ? _data.processorType : ""; 
+        public static string Resolution => _data ? _data.resolution : ""; 
+        public static string SourceCount => _data ? _data.sourceCount : ""; 
+        public static string TimeStep => _data ? _data.timeStep : ""; 
+        public static string UseBruteForce => _data ? _data.useBruteForce : ""; 
+        public static string UseDecay => _data ? _data.useDecay : ""; 
+        public static string FPS => _data ? _data.fps : ""; 
+        
 
         #region Event Functions
         
@@ -39,12 +50,12 @@ namespace VolumetricInteraction.Benchmarking
         {
             _frames++;
             _delta += Time.deltaTime;
+            _data.fps = CalcFPS().ToString(CultureInfo.CurrentCulture);
         }
 
         public static void End()
         {
-            float fps = GetFPS();
-            _data.fps = fps.ToString(CultureInfo.CurrentCulture);
+            _data.fps = CalcFPS().ToString(CultureInfo.CurrentCulture);
             
             _data.SendData();
         }
@@ -52,7 +63,7 @@ namespace VolumetricInteraction.Benchmarking
         #endregion
 
 
-        public static float GetFPS()
+        private static float CalcFPS()
         {
             return _frames == 0 ? 0f : 1.0f / (_delta / _frames);
         }

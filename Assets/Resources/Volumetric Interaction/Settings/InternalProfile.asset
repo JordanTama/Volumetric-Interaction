@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
   m_Name: InternalProfile
   m_EditorClassIdentifier: 
-  resolution: {x: 96, y: 96, z: 96}
+  resolution: {x: 128, y: 128, z: 128}
   filterMode: 0
   useDecay: 1
   decaySpeed: 0.5
