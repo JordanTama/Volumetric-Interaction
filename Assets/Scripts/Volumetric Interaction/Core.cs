@@ -5,8 +5,9 @@ using UnityEngine.Rendering;
 namespace VolumetricInteraction
 {
     // High-priority
-    // TODO: Create test scripts/timelines
     // TODO: BENCHMARKING
+    
+    // TODO: SystemInfo contains maxComputeWorkGroupSize!!!
     
     // Low-priority
     // BUG: Black pixel at 0, 0, 0 in VI texture when using JFA.
