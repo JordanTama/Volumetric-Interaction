@@ -21,11 +21,11 @@ namespace VolumetricInteraction.Benchmarking
             _profile.ApplyValues(Settings.Profile);
 
             Parameter<Vector3Int> resolutionParam = new Parameter<Vector3Int>(new Vector3Int(32, 32, 32),
-                v => v + new Vector3Int(32, 32, 32), v => v.Equals(new Vector3Int(128, 128, 128)));
+                v => v + new Vector3Int(32, 32, 32), v => v.Equals(new Vector3Int(256, 256, 256)));
 
             Parameter<int> sourceCountParam = new Parameter<int>(0, v => v + 25, v => v >= 100);
 
-            Parameter<float> timeStepParam = new Parameter<float>(0f, v => v + 0.05f, v => v >= 0.1f);
+            Parameter<float> timeStepParam = new Parameter<float>(0f, v => v + 0.025f, v => v >= 0.1f);
 
             state = new State(resolutionParam, sourceCountParam, timeStepParam);
 
@@ -47,11 +47,11 @@ namespace VolumetricInteraction.Benchmarking
         private void OnRoundEnd()
         {
             Logger.End();
+
+            state.Increment();
             
             if (state.Completed)
                 return;
-
-            state.Increment();
             
             BeginRound();
         }

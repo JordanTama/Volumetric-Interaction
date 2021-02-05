@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Development/Volumetric Interaction.unity
+    guid: b983afb2f18707a4caf015b5cd2d96ca
   m_configObjects: {}

@@ -11,6 +11,7 @@ namespace VolumetricInteraction.Benchmarking
         private static int _frames;
         private static float _delta;
 
+        public static bool Active { get; private set; }
         
         public static string DeviceUniqueIdentifier => _data ? _data.deviceUniqueIdentifier : ""; 
         public static string GraphicsDeviceName => _data ? _data.graphicsDeviceName : ""; 
@@ -20,13 +21,15 @@ namespace VolumetricInteraction.Benchmarking
         public static string TimeStep => _data ? _data.timeStep : ""; 
         public static string UseBruteForce => _data ? _data.useBruteForce : ""; 
         public static string UseDecay => _data ? _data.useDecay : ""; 
-        public static string FPS => _data ? _data.fps : ""; 
+        public static string FPS => _data ? _data.fps : "";
         
-
+        
         #region Event Functions
         
         public static void Begin(State state)
         {
+            Active = true;
+            
             GameObject gameObject = new GameObject
             {
                 name = "Current Form Data"
@@ -48,6 +51,9 @@ namespace VolumetricInteraction.Benchmarking
 
         public static void Tick()
         {
+            if (!Active)
+                return;
+            
             _frames++;
             _delta += Time.deltaTime;
             _data.fps = CalcFPS().ToString(CultureInfo.CurrentCulture);
@@ -55,6 +61,8 @@ namespace VolumetricInteraction.Benchmarking
 
         public static void End()
         {
+            Active = false;
+            
             _data.fps = CalcFPS().ToString(CultureInfo.CurrentCulture);
             
             _data.SendData();

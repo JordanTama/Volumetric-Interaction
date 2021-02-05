@@ -52,7 +52,7 @@ public class RuntimeManager : MonoBehaviour
 
     private void Update()
     {
-        if (!Current.Equals(Menu.Runtime))
+        if (!Current.Equals(Menu.Runtime) || !Logger.Active)
             return;
         
         elapsed.text = (Time.time - time).ToString(CultureInfo.CurrentCulture);
