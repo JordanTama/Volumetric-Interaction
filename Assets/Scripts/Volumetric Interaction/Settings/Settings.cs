@@ -7,9 +7,9 @@ namespace VolumetricInteraction
     [Serializable]
     public class Settings : ScriptableObject
     {
-        private const string SettingsPath = "Assets/Resources/Volumetric Interaction/Settings/";
-        private const string InstancePath = SettingsPath + "SettingsInstance.asset";
-        private const string ProfilePath = SettingsPath + "InternalProfile.asset";
+        private const string SettingsPath = "Volumetric Interaction/Settings/";
+        private const string InstancePath = SettingsPath + "SettingsInstance";
+        private const string ProfilePath = SettingsPath + "InternalProfile";
         
         // Serialized member variables
         [SerializeField] private SettingsProfile profile;
@@ -27,30 +27,23 @@ namespace VolumetricInteraction
             get
             {
                 if (!_instance)
-                    _instance = AssetDatabase.LoadAssetAtPath<Settings>(InstancePath);
+                    _instance = Resources.Load<Settings>(SettingsPath);
 
                 if (_instance)
                     return _instance;
                 
                 Settings instance = CreateInstance<Settings>();
-                instance.profile = AssetDatabase.LoadAssetAtPath<SettingsProfile>(ProfilePath);
+                instance.profile = Resources.Load<SettingsProfile>(ProfilePath);
 
-                AssetDatabase.CreateAsset(instance, InstancePath);
+#if UNITY_EDITOR
+                AssetDatabase.CreateAsset(instance, "Assets/Resources/" + InstancePath);
+#endif
 
                 return _instance = instance;
             }
         }
 
-        public static ComputeShader Shader
-        {
-            get
-            {
-                if (!Instance.shader)
-                    Instance.shader = AssetDatabase.LoadAssetAtPath<ComputeShader>("Assets/Shaders/Compute Shaders/VICompute.compute");
-
-                return Instance.shader;
-            }
-        }
+        public static ComputeShader Shader => Instance.shader;
 
         
         #region Profile accessor properties
@@ -73,7 +66,10 @@ namespace VolumetricInteraction
         public static void ApplyValues(SettingsProfile newProfile)
         {
             Profile.ApplyValues(newProfile);
+            
+#if UNITY_EDITOR
             EditorUtility.SetDirty(Profile);
+#endif
             
             Core.Initialize();
         }

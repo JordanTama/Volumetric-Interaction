@@ -11,6 +11,7 @@ namespace VolumetricInteraction.Editor
         private SerializedProperty generateInEditor;
         private SerializedProperty steps;
         private SerializedProperty debugSteps;
+        private SerializedProperty shader;
 
         
         private void OnEnable()
@@ -19,10 +20,14 @@ namespace VolumetricInteraction.Editor
             generateInEditor = serializedObject.FindProperty("generateInEditor");
             steps = serializedObject.FindProperty("steps");
             debugSteps = serializedObject.FindProperty("debugSteps");
+            shader = serializedObject.FindProperty("shader");
         }
 
         public override void OnInspectorGUI()
         {
+            shader.objectReferenceValue =
+                EditorGUILayout.ObjectField("Shader", shader.objectReferenceValue, typeof(ComputeShader), false);
+            
             drawGizmos.boolValue = EditorGUILayout.Toggle("Draw Gizmos", drawGizmos.boolValue);
             generateInEditor.boolValue = EditorGUILayout.Toggle("Generate In Editor", generateInEditor.boolValue);
 

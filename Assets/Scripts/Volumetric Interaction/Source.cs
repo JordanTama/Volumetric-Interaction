@@ -63,12 +63,16 @@ namespace VolumetricInteraction
         
         
         #region Debug
-
+        
+#if UNITY_EDITOR
+        
         public override void DrawDebug()
         {
             Gizmos.color = _volume is null ? Color.red : Color.yellow;
             Gizmos.DrawWireSphere(Position, Radius);
         }
+        
+#endif
 
         #endregion
     }

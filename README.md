@@ -22,18 +22,18 @@ traditional approaches can be subverted, resulting in more immersive virtual env
     - [X] **1.2.1:** Program dynamic manager/actor relationship.
     - [X] **1.2.2:** Program debug and editor tools.
     
-- [ ] **1.3:** Implement volumetric texture rendering.
+- [X] **1.3:** Implement volumetric texture rendering.
     - [X] **1.3.1:** Implement brute force texture rendering algorithm.
     - [X] **1.3.2:** Program simple vertex displacement shader to debug vector field output.
     - [X] **1.3.3:** Program ray-marching shader for visualization.
-    - [ ] **1.3.4:** **_Implement faster rendering algorithm._**
+    - [X] **1.3.4:** **_Implement faster rendering algorithm._**
 
 ---
 
 ##### Aim 2: _To assess the viability of dynamic volumetric texture rendering in virtual environments with various performance metrics._
-- [ ] **2.1:** Set up testing environment.
-    - [ ] **2.1.1:** Identify and learn to use profiling/benchmarking tools.
-    - [ ] **2.1.2:** Program events that are consistent but test edge cases and stress.
+- [X] **2.1:** Set up testing environment.
+    - [X] **2.1.1:** Identify and learn to use profiling/benchmarking tools.
+    - [X] **2.1.2:** Program events that are consistent but test edge cases and stress.
     - [ ] **2.2.3:** Compare output with target performance metrics.
 
 ---

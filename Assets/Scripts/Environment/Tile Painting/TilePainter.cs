@@ -167,6 +167,8 @@ namespace Environment.TilePainting
     
     
         #region Debug
+        
+#if UNITY_EDITOR
     
         private void OnDrawGizmos()
         {
@@ -212,6 +214,8 @@ namespace Environment.TilePainting
             }
         }
     
+#endif
+        
         #endregion
     }
 }

@@ -134,6 +134,8 @@ namespace VolumetricInteraction.Benchmarking
 
         #region Debugging
         
+#if UNITY_EDITOR
+        
         private void OnDrawGizmos()
         {
             Handles.matrix = transform.localToWorldMatrix;
@@ -147,6 +149,8 @@ namespace VolumetricInteraction.Benchmarking
             Handles.DrawWireCube(negPosition, size);
             Handles.DrawWireCube(posPosition, size);
         }
+        
+#endif
         
         #endregion
     }

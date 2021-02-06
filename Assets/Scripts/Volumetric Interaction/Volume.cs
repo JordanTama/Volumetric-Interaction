@@ -2,7 +2,6 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using VolumetricInteraction.Utility;
 
 namespace VolumetricInteraction
 {
@@ -96,7 +95,9 @@ namespace VolumetricInteraction
 
 
         #region Debug
-
+        
+#if UNITY_EDITOR
+        
         public override void DrawDebug()
         {
             DrawBounds();
@@ -113,6 +114,8 @@ namespace VolumetricInteraction
             
             Handles.DrawWireCube(Vector3.zero, Vector3.one);
         }
+        
+#endif
 
         #endregion
     }

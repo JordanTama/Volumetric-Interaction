@@ -306,6 +306,8 @@ namespace VolumetricInteraction
         
         #region Debug
         
+#if UNITY_EDITOR
+        
         public static void DrawDebug()
         {
             foreach (Volume volume in Volumes)
@@ -314,6 +316,8 @@ namespace VolumetricInteraction
             foreach (Source source in Sources)
                 source.DrawDebug();
         }
+        
+#endif
         
         #endregion
         

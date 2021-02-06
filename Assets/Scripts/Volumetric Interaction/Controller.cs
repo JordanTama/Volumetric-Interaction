@@ -30,6 +30,8 @@ namespace VolumetricInteraction
         
         #region Debugging
 
+#if UNITY_EDITOR
+        
         public override void DrawDebug()
         {
             Core.DrawDebug();
@@ -40,6 +42,8 @@ namespace VolumetricInteraction
             if (Settings.DrawGizmos)
                 Core.DrawDebug();
         }
+        
+#endif
         
         #endregion
     }
