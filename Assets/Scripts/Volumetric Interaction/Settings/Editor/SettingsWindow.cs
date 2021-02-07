@@ -29,7 +29,7 @@ namespace VolumetricInteraction.Editor
         private void OnEnable()
         {
             _settingsEditor = (SettingsEditor) UnityEditor.Editor.CreateEditor(Settings.Instance);
-                
+
             _exposedProfile = CloneInternal();
             _profileEditor = (SettingsProfileEditor) UnityEditor.Editor.CreateEditor(_exposedProfile);
         }

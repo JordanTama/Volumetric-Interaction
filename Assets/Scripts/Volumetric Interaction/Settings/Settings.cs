@@ -27,7 +27,7 @@ namespace VolumetricInteraction
             get
             {
                 if (!_instance)
-                    _instance = Resources.Load<Settings>(SettingsPath);
+                    _instance = Resources.Load<Settings>(InstancePath);
 
                 if (_instance)
                     return _instance;
@@ -36,7 +36,7 @@ namespace VolumetricInteraction
                 instance.profile = Resources.Load<SettingsProfile>(ProfilePath);
 
 #if UNITY_EDITOR
-                AssetDatabase.CreateAsset(instance, "Assets/Resources/" + InstancePath);
+                AssetDatabase.CreateAsset(instance, "Assets/Resources/" + InstancePath + ".asset");
 #endif
 
                 return _instance = instance;

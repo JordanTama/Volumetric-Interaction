@@ -76,11 +76,6 @@ public class RuntimeManager : MonoBehaviour
         time = Time.time;
     }
 
-    public void Return()
-    {
-        Current = Menu.Home;
-    }
-
     public void Exit()
     {
         Application.Quit();
