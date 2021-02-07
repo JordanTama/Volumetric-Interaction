@@ -48,6 +48,9 @@ namespace VolumetricInteraction
 
         public static void Initialize()
         {
+            _texture = null;
+            _previous = null;
+            
             Volume[] volumes = Volumes.ToArray();
             foreach (Volume volume in volumes)
                 volume.Clear();
@@ -99,6 +102,9 @@ namespace VolumetricInteraction
 
         private static void InitializeTexture()
         {
+            if (Settings.Resolution.Equals(Vector3Int.zero))
+                return;
+            
             CreateTexture(out _texture);
             CreateTexture(out _previous);
         }
@@ -120,6 +126,9 @@ namespace VolumetricInteraction
 
         private static void UpdateTexture(float delta)
         {
+            if (_texture is null)
+                return;
+            
             if (Settings.UseDecay)
                 Graphics.CopyTexture(_texture, _previous);
             
