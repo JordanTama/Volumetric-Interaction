@@ -25,6 +25,8 @@ namespace VolumetricInteraction.Benchmarking
 
         private void StartBenchmark()
         {
+            _state.Reset();
+            
             switch (_type)
             {
                 case Type.Default:

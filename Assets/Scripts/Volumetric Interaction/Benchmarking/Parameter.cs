@@ -4,31 +4,31 @@ namespace VolumetricInteraction.Benchmarking
 {
     public class Parameter<T> : IParameter
     {
-        private readonly T initial;
+        private readonly T _initial;
 
-        private readonly Func<T, T> increment;
-        private readonly Func<T, bool> completed;
+        private readonly Func<T, T> _increment;
+        private readonly Func<T, bool> _completed;
 
-        private T current;
+        private T _current;
             
         public Parameter(T initial, Func<T, T> increment, Func<T, bool> completed)
         {
-            this.initial = initial;
+            _initial = initial;
 
-            this.increment = increment;
-            this.completed = completed;
+            _increment = increment;
+            _completed = completed;
 
-            current = initial;
+            _current = initial;
         }
 
 
-        public static implicit operator T(Parameter<T> p) => p.current;
+        public static implicit operator T(Parameter<T> p) => p._current;
 
             
-        public void Increment() => current = increment.Invoke(current);
+        public void Increment() => _current = _increment.Invoke(_current);
 
-        public void Reset() => current = initial;
+        public void Reset() => _current = _initial;
 
-        public bool Finished() => completed(current);
+        public bool Finished() => _completed(_current);
     }
 }

@@ -52,6 +52,14 @@ namespace VolumetricInteraction.Benchmarking
             }
         }
 
+        public void Reset()
+        {
+            Completed = false;
+            
+            foreach (IParameter p in Parameters)
+                p.Reset();
+        }
+
         public override string ToString()
         {
             return ((Vector3Int) Resolution).ToString() + ", " + (int) SourceCount + ", " + (float) TimeStep;
