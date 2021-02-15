@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace VolumetricInteraction.Benchmarking
@@ -8,15 +9,14 @@ namespace VolumetricInteraction.Benchmarking
         [SerializeField] private Tunnel tunnel;
         [SerializeField] private float roundDuration;
         [SerializeField] private int roundSeed;
-        [SerializeField] private SettingsProfile[] profiles;
+        [SerializeField] public SettingsProfile[] profiles;
         
         private State _state;
         private SettingsProfile _profile;
 
-        private static SettingsProfile[] _profiles;
-        private static int _profileIndex;
-
+        
         public static TestType Test = TestType.Performance;
+        public static string ProfileName;
 
 
         public enum TestType
@@ -26,16 +26,11 @@ namespace VolumetricInteraction.Benchmarking
             BruteForceSource,
             BruteForceRes,
             TimeStep,
-            QuarterRes
+            QuarterRes,
+            Profiles = QuarterRes + 5
         }
 
 
-        private void Start()
-        {
-            _profiles = profiles;
-        }
-
-        
         public void Benchmark()
         {
             _profile = ScriptableObject.CreateInstance<SettingsProfile>();
@@ -46,7 +41,7 @@ namespace VolumetricInteraction.Benchmarking
             BeginRound();
         }
 
-        private static State CreateState(TestType test)
+        private State CreateState(TestType test)
         {
             State state;
             
@@ -77,7 +72,8 @@ namespace VolumetricInteraction.Benchmarking
                     break;
                 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    state = Profile(TestType.Profiles - test);
+                    break;
             }
 
             return state;
@@ -187,6 +183,24 @@ namespace VolumetricInteraction.Benchmarking
                     return v;
                 }
             }
+
+            State Profile(int index)
+            {
+                Parameter<Vector3Int> resolutionParam = new Parameter<Vector3Int>(profiles[index].resolution,
+                    i => i, i => true);
+
+                Parameter<int> sourceCountParam = new Parameter<int>(20, i => i, i => true);
+
+                Parameter<float> timeStepParam = new Parameter<float>(profiles[index].timeStep, f => f, i => true);
+
+                Parameter<bool> useDecayParam = new Parameter<bool>(profiles[index].useDecay, b => b, b => true);
+                
+                Parameter<bool> useBruteForceParam = new Parameter<bool>(profiles[index].useBruteForce, b => b, b => true);
+
+                _profile.name = profiles[index].name;
+
+                return new State(resolutionParam, sourceCountParam, timeStepParam, useDecayParam, useBruteForceParam);
+            }
         }
         
         private void BeginRound()
@@ -197,6 +211,7 @@ namespace VolumetricInteraction.Benchmarking
             _profile.useBruteForce = _state.UseBruteForce;
             
             Settings.ApplyValues(_profile);
+            ProfileName = _profile.name;
             
             Logger.Begin(_state);
             
@@ -211,9 +226,13 @@ namespace VolumetricInteraction.Benchmarking
 
             if (_state.Completed)
             {
-                if ((int) ++Test < Enum.GetValues(typeof(TestType)).Length)
-                    Benchmark();
+                // if ((int) ++Test < Enum.GetValues(typeof(TestType)).Length)
+                //     Benchmark();
                 
+                const int max = (int) TestType.Profiles + 1;
+                if ((int) ++Test < max)
+                    Benchmark();
+                    
                 return;
             }
             

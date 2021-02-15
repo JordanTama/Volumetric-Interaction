@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
-  m_Name: InternalProfile
+  m_Name: 4. High
   m_EditorClassIdentifier: 
-  resolution: {x: 64, y: 64, z: 64}
+  resolution: {x: 48, y: 48, z: 48}
   filterMode: 1
   useDecay: 1
   decaySpeed: 0.5
   useBruteForce: 0
-  timeStep: 0
+  timeStep: 0.02

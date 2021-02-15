@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -18,6 +19,7 @@ namespace VolumetricInteraction.Benchmarking
 
         public static bool Active => !(_data is null);
         
+        
         #region Fields
 
         public static string DeviceUniqueIdentifier => _data ? _data.deviceUniqueIdentifier : ""; 
@@ -30,6 +32,7 @@ namespace VolumetricInteraction.Benchmarking
         public static string UseDecay => _data ? _data.useDecay : ""; 
         public static string FrameTime => _data ? _data.frameTime : "";
         public static string FPS => _data ? _data.fps : "";
+        public static string ProfileName => _data ? _data.profileName : "";
         public static string Test => _data ? _data.test : "";
         
         #endregion
@@ -53,7 +56,10 @@ namespace VolumetricInteraction.Benchmarking
             _data.timeStep = ((float)state.TimeStep).ToString(CultureInfo.CurrentCulture);
             _data.useBruteForce = Settings.UseBruteForce.ToString();
             _data.useDecay = Settings.UseDecay.ToString();
-            _data.test = Controller.Test.ToString();
+            _data.profileName = Controller.ProfileName;
+            
+            string[] names = Enum.GetNames(typeof(Controller.TestType));
+            _data.test = names[Mathf.Min(names.Length - 1, (int) Controller.Test)];
 
             _ticks = 0;
             _time = 0;
@@ -135,6 +141,7 @@ namespace VolumetricInteraction.Benchmarking
             private const string UseDecayId = "entry.1422726356";
             private const string FrameTimeId = "entry.935257789";
             private const string FPSId = "entry.1682358499";
+            private const string ProfileNameId = "entry.1211022496";
             private const string TestId = "entry.1904151775";
 
             public string deviceUniqueIdentifier;
@@ -147,6 +154,7 @@ namespace VolumetricInteraction.Benchmarking
             public string useDecay;
             public string frameTime;
             public string fps;
+            public string profileName;
             public string test;
 
 
@@ -170,6 +178,7 @@ namespace VolumetricInteraction.Benchmarking
                 form.AddField(UseDecayId, useDecay);
                 form.AddField(FrameTimeId, frameTime);
                 form.AddField(FPSId, fps);
+                form.AddField(ProfileNameId, profileName);
                 form.AddField(TestId, test);
 
                 using (UnityWebRequest w = UnityWebRequest.Post(ResponseAddress, form))

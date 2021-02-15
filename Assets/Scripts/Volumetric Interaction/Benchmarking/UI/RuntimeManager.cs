@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using VolumetricInteraction.Benchmarking;
@@ -25,17 +22,18 @@ public class RuntimeManager : MonoBehaviour
     public Text decay;
     public Text frameTime;
     public Text fps;
+    public Text profileName;
     public Text test;
 
-    private float time;
-    private Menu current;
+    private float _time;
+    private Menu _current;
 
     private Menu Current
     {
-        get => current;
+        get => _current;
         set
         {
-            current = value;
+            _current = value;
             UpdateMenu();
         }
     }
@@ -57,9 +55,9 @@ public class RuntimeManager : MonoBehaviour
         if (!Current.Equals(Menu.Runtime) || !Logger.Active)
             return;
 
-        time += Time.deltaTime;
+        _time += Time.deltaTime;
         
-        elapsed.text = time.ToString(CultureInfo.CurrentCulture);
+        elapsed.text = _time.ToString(CultureInfo.CurrentCulture);
         id.text = Logger.DeviceUniqueIdentifier;
         gpu.text = Logger.GraphicsDeviceName;
         cpu.text = Logger.ProcessorType;
@@ -70,6 +68,7 @@ public class RuntimeManager : MonoBehaviour
         decay.text = Logger.UseDecay;
         frameTime.text = Logger.FrameTime;
         fps.text = Logger.FPS;
+        profileName.text = Logger.ProfileName;
         test.text = Logger.Test;
     }
 
@@ -79,7 +78,7 @@ public class RuntimeManager : MonoBehaviour
         Current = Menu.Runtime;
         controller.Benchmark();
         
-        time = 0;
+        _time = 0;
     }
 
     public void Exit()
@@ -89,7 +88,7 @@ public class RuntimeManager : MonoBehaviour
 
     private void UpdateMenu()
     {
-        home.SetActive(current.Equals(Menu.Home));
-        runtime.SetActive(current.Equals(Menu.Runtime));
+        home.SetActive(_current.Equals(Menu.Home));
+        runtime.SetActive(_current.Equals(Menu.Runtime));
     }
 }
