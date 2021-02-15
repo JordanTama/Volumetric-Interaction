@@ -24,7 +24,10 @@ namespace VolumetricInteraction
             _timer -= Time.deltaTime;
             if (_timer > 0f) return;
             
+            Logger.StartTick();
             Core.InteractionUpdate(Settings.TimeStep - _timer);
+            Logger.EndTick();
+            
             _timer = Settings.TimeStep;
         }
 

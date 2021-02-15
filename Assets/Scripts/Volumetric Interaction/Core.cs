@@ -82,8 +82,6 @@ namespace VolumetricInteraction
 #if UNITY_EDITOR
             Profiler.BeginSample("Interaction Update");
 #endif
-         
-            Logger.StartTick();
             
             ActorTick();
             ActorUpdate();
@@ -92,8 +90,6 @@ namespace VolumetricInteraction
                 return;
                 
             UpdateTexture(delta);
-            
-            Logger.EndTick();
             
 #if UNITY_EDITOR
             Profiler.EndSample();

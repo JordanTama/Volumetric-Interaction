@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
-  m_Name: 1. Very low
+  m_Name: 1. Very Low
   m_EditorClassIdentifier: 
   resolution: {x: 16, y: 16, z: 16}
   filterMode: 1

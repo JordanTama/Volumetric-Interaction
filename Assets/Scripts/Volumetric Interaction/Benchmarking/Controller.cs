@@ -14,7 +14,7 @@ namespace VolumetricInteraction.Benchmarking
         private State _state;
         private SettingsProfile _profile;
 
-        
+
         public static TestType Test = TestType.Performance;
         public static string ProfileName;
 
@@ -35,6 +35,7 @@ namespace VolumetricInteraction.Benchmarking
         {
             _profile = ScriptableObject.CreateInstance<SettingsProfile>();
             _profile.ApplyValues(Settings.Profile);
+            _profile.name = "0. Default";
 
             _state = CreateState(Test);
             
