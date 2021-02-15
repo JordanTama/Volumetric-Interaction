@@ -23,7 +23,9 @@ public class RuntimeManager : MonoBehaviour
     public Text timeStep;
     public Text bruteForce;
     public Text decay;
+    public Text frameTime;
     public Text fps;
+    public Text test;
 
     private float time;
     private Menu current;
@@ -54,8 +56,10 @@ public class RuntimeManager : MonoBehaviour
     {
         if (!Current.Equals(Menu.Runtime) || !Logger.Active)
             return;
+
+        time += Time.deltaTime;
         
-        elapsed.text = (Time.time - time).ToString(CultureInfo.CurrentCulture);
+        elapsed.text = time.ToString(CultureInfo.CurrentCulture);
         id.text = Logger.DeviceUniqueIdentifier;
         gpu.text = Logger.GraphicsDeviceName;
         cpu.text = Logger.ProcessorType;
@@ -64,7 +68,9 @@ public class RuntimeManager : MonoBehaviour
         timeStep.text = Logger.TimeStep;
         bruteForce.text = Logger.UseBruteForce;
         decay.text = Logger.UseDecay;
+        frameTime.text = Logger.FrameTime;
         fps.text = Logger.FPS;
+        test.text = Logger.Test;
     }
 
     
@@ -73,7 +79,7 @@ public class RuntimeManager : MonoBehaviour
         Current = Menu.Runtime;
         controller.Benchmark();
         
-        time = Time.time;
+        time = 0;
     }
 
     public void Exit()

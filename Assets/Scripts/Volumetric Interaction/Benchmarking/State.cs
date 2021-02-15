@@ -10,18 +10,21 @@ namespace VolumetricInteraction.Benchmarking
         public Parameter<Vector3Int> Resolution;
         public Parameter<int> SourceCount;
         public Parameter<float> TimeStep;
+        public Parameter<bool> UseDecay;
+        public Parameter<bool> UseBruteForce;
 
         
         public bool Completed { get; private set; }
-            
-        private List<IParameter> Parameters => new List<IParameter> { Resolution, SourceCount, TimeStep };
+        private List<IParameter> Parameters => new List<IParameter> { UseDecay, UseBruteForce, Resolution, SourceCount, TimeStep };
 
         
-        public State(Parameter<Vector3Int> resolution, Parameter<int> sourceCount, Parameter<float> timeStep)
+        public State(Parameter<Vector3Int> resolution, Parameter<int> sourceCount, Parameter<float> timeStep, Parameter<bool> useDecay, Parameter<bool> useBruteForce)
         {
             Resolution = resolution;
             SourceCount = sourceCount;
             TimeStep = timeStep;
+            UseDecay = useDecay;
+            UseBruteForce = useBruteForce;
 
             Completed = false;
         }
@@ -58,11 +61,6 @@ namespace VolumetricInteraction.Benchmarking
             
             foreach (IParameter p in Parameters)
                 p.Reset();
-        }
-
-        public override string ToString()
-        {
-            return ((Vector3Int) Resolution).ToString() + ", " + (int) SourceCount + ", " + (float) TimeStep;
         }
     }
 }

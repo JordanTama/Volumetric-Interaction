@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Logger = VolumetricInteraction.Benchmarking.Logger;
 
 namespace VolumetricInteraction
 {
@@ -18,6 +19,8 @@ namespace VolumetricInteraction
         
         private void Update()
         {
+            Logger.Update();
+            
             _timer -= Time.deltaTime;
             if (_timer > 0f) return;
             
