@@ -10,6 +10,7 @@ namespace VolumetricInteraction
     {
         private readonly List<Source> _sources = new List<Source>();
 
+        private const DebugFlag DebugFlag = VolumetricInteraction.DebugFlag.Volume;
 
         public int Count => _sources.Count;
 
@@ -97,13 +98,21 @@ namespace VolumetricInteraction
         #region Debug
         
 #if UNITY_EDITOR
-        
+
+        protected override DebugFlag GetDebugFlag()
+        {
+            return DebugFlag.Volume;
+        }
+
         public override void DrawDebug()
         {
-            DrawBounds();
-            
             foreach (Source source in _sources)
                 source.DrawDebug();
+            
+            if ((Settings.DebugFlags & GetDebugFlag()) == 0)
+                return;
+            
+            DrawBounds();
         }
 
         private void DrawBounds()

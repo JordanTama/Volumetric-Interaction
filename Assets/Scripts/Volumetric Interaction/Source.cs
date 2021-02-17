@@ -9,6 +9,7 @@ namespace VolumetricInteraction
     {
         private Volume _volume;
 
+        
         public Vector3 Position { get; private set; }
         public Vector3 PreviousPosition { get; private set; }
 
@@ -65,9 +66,17 @@ namespace VolumetricInteraction
         #region Debug
         
 #if UNITY_EDITOR
-        
+
+        protected override DebugFlag GetDebugFlag()
+        {
+            return DebugFlag.Source;
+        }
+
         public override void DrawDebug()
         {
+            if ((Settings.DebugFlags & GetDebugFlag()) == 0)
+                return;
+            
             Gizmos.color = _volume is null ? Color.red : Color.yellow;
             Gizmos.DrawWireSphere(Position, Radius);
         }

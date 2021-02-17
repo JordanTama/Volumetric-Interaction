@@ -15,6 +15,7 @@ namespace VolumetricInteraction
         [SerializeField] private SettingsProfile profile;
         [SerializeField] private ComputeShader shader;
         [SerializeField] private bool drawGizmos;
+        [SerializeField] private DebugFlag debugFlags;
         [SerializeField] private bool generateInEditor;
         [SerializeField] private int steps;
         [SerializeField] private bool debugSteps;
@@ -56,6 +57,7 @@ namespace VolumetricInteraction
         public static bool UseBruteForce => Profile.useBruteForce;
         public static float TimeStep => Profile.timeStep;
         public static bool DrawGizmos => Instance.drawGizmos;
+        public static DebugFlag DebugFlags => Instance.debugFlags;
         public static bool GenerateInEditor => Instance.generateInEditor;
         public static int Steps => Instance.steps;
         public static bool DebugSteps => Instance.debugSteps;

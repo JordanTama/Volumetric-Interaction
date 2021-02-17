@@ -8,6 +8,7 @@ namespace VolumetricInteraction.Editor
     public class SettingsEditor : UnityEditor.Editor
     {
         private SerializedProperty _drawGizmos;
+        private SerializedProperty _debugFlags;
         private SerializedProperty _generateInEditor;
         private SerializedProperty _steps;
         private SerializedProperty _debugSteps;
@@ -17,6 +18,7 @@ namespace VolumetricInteraction.Editor
         private void OnEnable()
         {
             _drawGizmos = serializedObject.FindProperty("drawGizmos");
+            _debugFlags = serializedObject.FindProperty("debugFlags");
             _generateInEditor = serializedObject.FindProperty("generateInEditor");
             _steps = serializedObject.FindProperty("steps");
             _debugSteps = serializedObject.FindProperty("debugSteps");
@@ -29,6 +31,10 @@ namespace VolumetricInteraction.Editor
                 EditorGUILayout.ObjectField("Shader", _shader.objectReferenceValue, typeof(ComputeShader), false);
             
             _drawGizmos.boolValue = EditorGUILayout.Toggle("Draw Gizmos", _drawGizmos.boolValue);
+            if (_drawGizmos.boolValue)
+            {
+                _debugFlags.intValue = (int) (DebugFlag) EditorGUILayout.EnumFlagsField((DebugFlag) _debugFlags.intValue);
+            }
             _generateInEditor.boolValue = EditorGUILayout.Toggle("Generate In Editor", _generateInEditor.boolValue);
 
             int floodIterations = (int) Mathf.Log(

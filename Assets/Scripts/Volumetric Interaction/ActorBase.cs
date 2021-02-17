@@ -15,12 +15,17 @@ namespace VolumetricInteraction
         #region Debug
         
 #if UNITY_EDITOR
-        
+
+        protected virtual DebugFlag GetDebugFlag()
+        {
+            return 0;
+        }
+
         public abstract void DrawDebug();
-        
+
 #endif
-        
+
         #endregion
-        
+
     }
 }
