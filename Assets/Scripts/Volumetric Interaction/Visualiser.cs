@@ -11,6 +11,7 @@ public class Visualiser : MonoBehaviour
     [SerializeField] private int samples;
     [SerializeField] [Range(0f, 1f)] private float opacity;
     [SerializeField] private bool depthTest;
+    [SerializeField] private string fileName;
 
     private Material _material;
     

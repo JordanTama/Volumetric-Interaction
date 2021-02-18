@@ -19,4 +19,12 @@ public abstract class ContextMenu
 
         ProjectWindowUtil.CreateAsset(asset, path);
     }
+
+    /*
+        Pattern:
+        private const string Directory = "Assets/Create/ # Context Menu Directory # /";
+        
+        [MenuItem(Directory + # Menu Item Name #)]
+        private static void # FunctionName # () => CreateScriptableObject< # ScriptableObject Type # >();
+     */
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace VolumetricInteraction
@@ -77,8 +78,11 @@ namespace VolumetricInteraction
             if ((Settings.DebugFlags & GetDebugFlag()) == 0)
                 return;
             
-            Gizmos.color = _volume is null ? Color.red : Color.yellow;
-            Gizmos.DrawWireSphere(Position, Radius);
+            Handles.matrix = Matrix4x4.identity;
+            
+            Handles.color = _volume is null ? Color.red : Color.yellow;
+            Handles.DrawWireArc(Position, (Camera.main.transform.position - Position).normalized, Camera.main.transform.up, 360f, Radius);
+            // Gizmos.DrawWireSphere(Position, Radius);
         }
         
 #endif

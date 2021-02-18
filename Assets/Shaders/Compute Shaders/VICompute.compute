@@ -74,6 +74,9 @@ void jump_flooding (const uint3 id : SV_DispatchThreadID)
 [numthreads(8,8,8)]
 void conversion (const uint3 id : SV_DispatchThreadID)
 {
+    if (current[id].a <= 0)
+        return;
+    
     // STEP 1. Convert pixel to world space (pixel to world).
     const float3 pixel_world = pixel_to_world(id);
 

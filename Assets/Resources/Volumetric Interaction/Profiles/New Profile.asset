@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5db33034f4949889091d400d99599d2, type: 3}
-  m_Name: InternalProfile
+  m_Name: New Profile
   m_EditorClassIdentifier: 
   resolution: {x: 64, y: 64, z: 64}
   filterMode: 0
