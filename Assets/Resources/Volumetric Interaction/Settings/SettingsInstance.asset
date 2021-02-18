@@ -17,5 +17,5 @@ MonoBehaviour:
   drawGizmos: 1
   debugFlags: -1
   generateInEditor: 1
-  steps: 0
-  debugSteps: 1
+  steps: 6
+  debugSteps: 0
