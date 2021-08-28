@@ -5,51 +5,12 @@
     float radius;
 };
 
-RWTexture3D<float4> current;
-RWTexture3D<float4> previous;
-
+RWTexture3D<float4> result;
 RWStructuredBuffer<seed> buffer;
 
 float4x4 volume_local_to_world;
-float4x4 volume_world_to_local;
-
-int3 resolution;
-int3 step_size;
-
-float radius_multiplier;
+uint3 resolution;
 float delta;
-float decay_speed;
-
-static int3 offsets[27] = {
-    int3(-1, -1, -1),
-    int3(-1, -1, 0),
-    int3(-1, -1, 1),
-    int3(-1, 0, -1),
-    int3(-1, 0, 0),
-    int3(-1, 0, 1),
-    int3(-1, 1, -1),
-    int3(-1, 1, 0),
-    int3(-1, 1, 1),
-    int3(0, -1, -1),
-    int3(0, -1, 0),
-    int3(0, -1, 1),
-    int3(0, 0, -1),
-    int3(0, 0, 0),
-    int3(0, 0, 1),
-    int3(0, 1, -1),
-    int3(0, 1, 0),
-    int3(0, 1, 1),
-    int3(1, -1, -1),
-    int3(1, -1, 0),
-    int3(1, -1, 1),
-    int3(1, 0, -1),
-    int3(1, 0, 0),
-    int3(1, 0, 1),
-    int3(1, 1, -1),
-    int3(1, 1, 0),
-    int3(1, 1, 1)
-};
-
 
 float move_towards(float current, float target, float max_delta)
 {
@@ -69,27 +30,12 @@ float3 closest_point_on_line_segment(float3 p, float3 a, float3 b)
     return (1 - t) * a + t * b;
 }
 
-
-float3 pixel_to_world(float3 id)
+float3 id_to_world(float3 id)
 {
     const float3 uv = id.xyz / float3(resolution.x - 1, resolution.y - 1, resolution.z - 1);
-    const float3 local = uv.xyz - 0.5;
-    return mul(volume_local_to_world, float4(local, 1));
-}
-
-float3 world_to_pixel(float3 world)
-{
-    const float3 local = mul(volume_world_to_local, float4(world, 1));
-    const float3 uv = local + 0.5;
-    return floor(uv * float3(resolution - 1));
-}
-
-float3 uv_to_world(float3 uv)
-{
-    const float3 local = uv - 0.5;
+    const float3 local = uv.xyz - .5;
     return mul(volume_local_to_world, float4(local, 1)).xyz;
 }
-
 
 float4 blend_interaction(float4 from, float4 to)
 {
@@ -101,7 +47,6 @@ float4 blend_interaction(float4 from, float4 to)
     
     return final_value;
 }
-
 
 float4 calculate_interaction_point(float3 world)
 {
