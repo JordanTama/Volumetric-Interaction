@@ -9,7 +9,7 @@ RWTexture3D<float4> result;
 RWStructuredBuffer<seed> buffer;
 
 float4x4 volume_local_to_world;
-int3 resolution;
+uint3 resolution;
 float delta;
 
 float move_towards(float current, float target, float max_delta)
@@ -34,7 +34,7 @@ float3 id_to_world(float3 id)
 {
     const float3 uv = id.xyz / float3(resolution.x - 1, resolution.y - 1, resolution.z - 1);
     const float3 local = uv.xyz - .5;
-    return mul(volume_local_to_world, float4(local, 1));
+    return mul(volume_local_to_world, float4(local, 1)).xyz;
 }
 
 float4 blend_interaction(float4 from, float4 to)
