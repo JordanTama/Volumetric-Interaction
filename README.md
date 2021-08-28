@@ -1,5 +1,7 @@
 # **Volumetric Interaction**
 
+![Image](Images/VI-combined.gif)
+
 This project involves developing a dynamic volumetric (3D) texture rendering implementation to
 assess the viability of dynamic volumetric textures in games. The viability will be gauged by
 performance benchmarks across multiple devices.
